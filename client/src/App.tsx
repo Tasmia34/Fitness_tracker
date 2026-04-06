@@ -1,5 +1,7 @@
 import { Route, Routes } from "react-router-dom"
-import Dashboard from "./pages/Dashboard"
+
+import Dashboard from "./pages/Dashboard" 
+
 import FoodLog from "./pages/FoodLog"
 import ActivityLog from "./pages/ActivityLog"
 import Login from "./pages/Login"
