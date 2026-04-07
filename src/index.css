@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
+
+@import "tailwindcss";
+
+
+*{
+   font-family: "Rethink Sans", sans-serif;
+}
+
+/* login page*/
+.login-page-container {
+   @apply flex items-center justify-center h-screen w-full px-4
+   bg-white dark:bg-slate-950 transition-colors duration-200;
+
+}
+
+.login-form {
+@apply flex w-full flex-col max-w-80;
+
+}
