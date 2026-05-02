@@ -143,7 +143,7 @@ const Login: React.FC = () => {
 
           {/* Action Button */}
           <button 
-            type="submit" D:D
+            type="submit" 
             disabled={isSubmitting}
             className="w-full mt-10 py-4 bg-sky-600 hover:bg-sky-700 disabled:bg-slate-400 text-white font-bold rounded-xl transition-all shadow-lg shadow-sky-500/20 active:scale-[0.98]"
           >
