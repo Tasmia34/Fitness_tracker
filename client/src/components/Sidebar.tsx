@@ -1,19 +1,20 @@
 import { NavLink } from "react-router-dom";
-import { ActivityIcon, HomeIcon, UserIcon, UtensilsIcon, Moon, Sun } from "lucide-react";
+import { ActivityIcon,  UserIcon,  Moon, Sun, LayoutDashboard, Bot } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 const Sidebar = () => {
   const { theme, toggleTheme } = useTheme();
 
   const navItems = [
-    { path: '/', label: 'Home', icon: HomeIcon },
-    { path: '/food', label: 'Food', icon: UtensilsIcon },
-    { path: '/activityLog', label: 'Activity', icon: ActivityIcon }, // Path must match your App.jsx
+    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/profile', label: 'Profile', icon: UserIcon },
+    { path: '/activityLog', label: 'Activity', icon: ActivityIcon }, 
+    { path: '/aiPlanner', label: 'AI Assistant', icon: Bot },
+    
   ];
 
   return (
-    <nav className="hidden lg:flex flex-col w-64 h-screen bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 p-6 transition-colors duration-200 sticky top-0">
+    <nav className="flex flex-col w-20 sm:w-64 h-screen bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 p-4 sm:p-6 transition-colors duration-200 sticky top-0">
       <div className="flex items-center gap-3 mb-8">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Health Monitor</h1>
       </div>
@@ -37,7 +38,7 @@ const Sidebar = () => {
         ))}
       </div>
 
-      {/* Theme Toggle Button */}
+      {/* Theme Change Button */}
       <button
         onClick={toggleTheme}
         className="mt-auto flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-all"

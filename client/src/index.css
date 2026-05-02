@@ -5,3 +5,15 @@
 *{
    font-family: "Rethink Sans", sans-serif;
 }
+
+/* Hide number input arrows (spinners) for Chrome, Safari, Edge, and Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide number input arrows for Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -8,6 +8,7 @@ import Login from "./pages/Login"
 import Profile from "./pages/Profile"
 import Onboarding from "./pages/Onboarding"
 import Layout from "./pages/Layout"
+import AiAssistant from "./pages/AiAssistant"
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Route path='/' element={<Layout/>}>
         <Route index element={<Dashboard />} />
         <Route path='food' element={<FoodLog />} />
+        <Route path='aiPlanner' element={<AiAssistant />} />
         <Route path='activityLog' element={<ActivityLog />} />
         <Route path='login' element={<Login />} />
         <Route path='profile' element={<Profile />} /> 
