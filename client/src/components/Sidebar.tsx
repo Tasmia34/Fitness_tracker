@@ -1,7 +1,12 @@
 import { useAppContext } from "../context/Appcontext";
 import { NavLink } from "react-router-dom";
+<<<<<<< HEAD
 
 import { ActivityIcon, HomeIcon, UserIcon ,Bot,LayoutDashboard, Moon, Sun , LogOut, LockIcon} from "lucide-react";
+=======
+import { ActivityIcon, HomeIcon, UserIcon , Moon, Sun , LogOut, LockIcon} from "lucide-react";
+import {  LayoutDashboard, Bot } from "lucide-react";
+>>>>>>> ea49fe0ad5650c7f785ff9ee31b36aa5758b457b
 import { useTheme } from "../context/ThemeContext";
 
 const Sidebar = () => {
@@ -9,14 +14,25 @@ const Sidebar = () => {
   const { logout } = useAppContext(); // take logout function from conext
 
   const navItems = [
+<<<<<<< HEAD
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
     // { path: '/', label: 'Home', icon: HomeIcon },
     
+=======
+    { path: '/', label: 'Home', icon: HomeIcon },
+>>>>>>> ea49fe0ad5650c7f785ff9ee31b36aa5758b457b
     { path: '/profile', label: 'Profile', icon: UserIcon },
+
+    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/activityLog', label: 'Activity', icon: ActivityIcon }, 
     { path: '/aiPlanner', label: 'AI Assistant', icon: Bot },
+<<<<<<< HEAD
     
     { path: '/login', label: 'Login/Signup', icon: LockIcon },
+=======
+        { path: '/login', label: 'Login/Signup', icon: LockIcon },
+
+>>>>>>> ea49fe0ad5650c7f785ff9ee31b36aa5758b457b
   ];
 
   return (
@@ -44,6 +60,9 @@ const Sidebar = () => {
         ))}
       </div>
 
+      {/* Theme Toggle Button */}
+
+      <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
       {/* Theme Change Button */}
 
 

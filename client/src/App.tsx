@@ -10,7 +10,7 @@ import Layout from "./pages/Layout"
 import { useAppContext } from "./context/Appcontext"
 
 const App = () => {
-  const { user, isUserFetched} = useAppContext()
+  const { user, isUserFetched , onboardingCompleted} = useAppContext()
 
   // ডাটা ফেচ হওয়া পর্যন্ত ওয়েটিং স্ক্রিন
   if (!isUserFetched) return <div className="h-screen flex items-center justify-center bg-slate-950 text-white">Loading...</div>
@@ -24,9 +24,14 @@ const App = () => {
       <Route path='/' element={user ? <Layout /> : <Navigate to="/login" />}>
         
         {/* যদি অনবোর্ডিং শেষ না হয়, তবে সবসময় অনবোর্ডিং পেজে পাঠাবে */}
-        <Route index element={ <Dashboard /> }/>
+       <Route index element={
+      <div className="p-8">
+        <h1 className="text-3xl font-bold text-white">Welcome to Health Monitor</h1>
+        <p className="text-slate-400 mt-4">This is my new, independent homepage. Ready to  design it however i  like!</p>
+      </div>
+    } />
         
-        <Route path='activityLog' element={<ActivityLog />} />
+        <Route path="dashboard" element={<Dashboard />} />        <Route path='activityLog' element={<ActivityLog />} />
 	      <Route path='aiPlanner' element={<AiAssistant />} />
         <Route path='profile' element={<Profile />} /> 
         <Route path='onboarding' element={<Onboarding />} />
