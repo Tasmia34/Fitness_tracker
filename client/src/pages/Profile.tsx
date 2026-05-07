@@ -11,6 +11,8 @@ const Profile = () => {
     dob: user?.dob || '',
     age: user?.age || '',
     height: user?.height || '', // weight এর বদলে height
+    gender: user?.gender || '',
+    bloodGroup: user?.bloodGroup || '',
     profileImage: user?.profileImage || null 
   });
 
@@ -37,11 +39,13 @@ const Profile = () => {
     setIsSaving(true);
     
     const updatedUser = {
-      ...user,
+      ...user!,
       name: formData.name,
       dob: formData.dob,
       age: Number(formData.age),
       height: Number(formData.height), // height সেভ করা হচ্ছে
+      gender: formData.gender || undefined, /////baki kaj ekhane
+      bloodGroup: formData.bloodGroup || undefined, /////baki kaj ekhane
       profileImage: formData.profileImage || undefined
     };
 
@@ -141,6 +145,44 @@ const Profile = () => {
                   className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-blue-600/50"
                 />
               </div>
+
+{/* Gender Section */}
+  <div className="space-y-2">
+    <label className="text-sm font-medium text-slate-400">Gender</label>
+    <select 
+      value={formData.gender}
+      onChange={(e) => setFormData({...formData, gender: e.target.value})}
+      className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none"
+    >
+      <option value="">Select Gender</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
+
+  {/* Blood Group Section */}
+  <div className="space-y-2">
+    <label className="text-sm font-medium text-slate-400">Blood Group</label>
+    <select 
+      value={formData.bloodGroup}
+      onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}
+      className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none"
+    >
+      <option value="">Select Group</option>
+      <option value="A+">A+</option>
+      <option value="A-">A-</option>
+      <option value="B+">B+</option>
+      <option value="B-">B-</option>
+      <option value="O+">O+</option>
+      <option value="O-">O-</option>
+      <option value="AB+">AB+</option>
+      <option value="AB-">AB-</option>
+    </select>
+  </div>
+
+
+
             </div>
 
             <div className="mt-12 flex justify-end">

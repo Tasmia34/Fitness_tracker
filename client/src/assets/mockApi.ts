@@ -1,21 +1,19 @@
-import { dummyUser, dummyFoodLogs, dummyActivityLogs } from "../assets/assets";
-import type { UserData, FoodEntry, ActivityEntry, FormData } from "../types";
+import { dummyUser, dummyActivityLogs } from "../assets/assets";
+import type { User, ActivityEntry } from "../types";
 
+// DB interface is updated so that type safety is maintained
 interface DB {
-    user: any;
-    foodLogs: FoodEntry[];
+    user: User | null;
     activityLogs: ActivityEntry[];
 }
 
 const getDB = (): DB => {
     const dbStr = localStorage.getItem('fitness_db');
     if (!dbStr) {
-        const initialDB: DB = {
+        return {
             user: null,
-            foodLogs: [],
             activityLogs: [],
         };
-        return initialDB;
     }
     return JSON.parse(dbStr);
 };
@@ -28,27 +26,37 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const mockApi = {
     auth: {
-        login: async (credentials: any) => {
-            await delay(500);
-            let db = getDB();
+       login: async (credentials: any) => {
+    await delay(500);
+    let db = getDB();
 
-            if (!db.user) {
-                db.user = {
-                    ...dummyUser,
-                    email: credentials.identifier || credentials.email,
-                    username: (credentials.identifier || credentials.email).split('@')[0],
-                };
-                db.foodLogs = [...dummyFoodLogs];
-                db.activityLogs = [...dummyActivityLogs];
-                saveDB(db);
+    // কেস ১: যদি ডাটাবেজে ইউজার না থাকে (অর্থাৎ রেজিস্ট্রেশন করা হয়নি)
+    if (!db.user) {
+        throw {
+            response: {
+                data: { message: "No account found with this email. Please Sign Up first." }
             }
-            return {
-                data: {
-                    user: db.user,
-                    jwt: "mock_jwt_token_" + Date.now(),
-                },
-            };
+        };
+    }
+
+    // কেস ২: ইউজার আছে কিন্তু পাসওয়ার্ড ভুল
+    // (নোট: রেজিস্ট্রেশন করার সময় পাসওয়ার্ড সেভ করা থাকতে হবে)
+    if (db.user.password && db.user.password !== credentials.password) {
+        throw {
+            response: {
+                data: { message: "Incorrect password! Please try again." }
+            }
+        };
+    }
+
+    // কেস ৩: ইউজার এবং পাসওয়ার্ড দুইটাই সঠিক
+    return {
+        data: {
+            user: db.user,
+            jwt: "mock_jwt_token_" + Date.now(),
         },
+    };
+},
         register: async (credentials: any) => {
             await delay(500);
             const db = getDB();
@@ -56,16 +64,17 @@ const mockApi = {
             db.user = {
                 id: "user_" + Date.now(),
                 username: credentials.username,
-                email: credentials.email,
+                email: credentials.identifier || credentials.email,
+                password: credentials.password,
+                token: "mock-jwt-token-" + Date.now(), // added a string token 
+                name: "",
+                dob: "",
                 age: 0,
-                weight: 0,
-                height: 0,
-                goal: "maintain",
-                dailyCalorieIntake: 2000,
-                dailyCalorieBurn: 400,
+                height: 0, 
+                gender: "", 
+                bloodGroup: "", 
                 createdAt: new Date().toISOString(),
             };
-            db.foodLogs = [];
             db.activityLogs = [];
             saveDB(db);
 
@@ -83,7 +92,7 @@ const mockApi = {
             const db = getDB();
             return { data: db.user || dummyUser };
         },
-        update: async (_id: string, updates: Partial<UserData>) => {
+        update: async (_id: string, updates: Partial<User>) => {
             await delay(300);
             const db = getDB();
             if (db.user) {
@@ -91,36 +100,6 @@ const mockApi = {
                 saveDB(db);
             }
             return { data: db.user };
-        }
-    },
-    foodLogs: {
-        list: async () => {
-            await delay(300);
-            const db = getDB();
-            return { data: db.foodLogs };
-        },
-        create: async (payload: { data: FormData | any }) => {
-            await delay(300);
-            const db = getDB();
-            const newEntry: FoodEntry = {
-                id: Date.now(),
-                documentId: "doc_food_" + Date.now(),
-                name: payload.data.name,
-                calories: payload.data.calories,
-                mealType: payload.data.mealType,
-                date: new Date().toISOString().split("T")[0],
-                createdAt: new Date().toISOString(),
-            };
-            db.foodLogs.push(newEntry);
-            saveDB(db);
-            return { data: newEntry };
-        },
-        delete: async (documentId: string) => {
-            await delay(300);
-            const db = getDB();
-            db.foodLogs = db.foodLogs.filter(f => f.documentId !== documentId);
-            saveDB(db);
-            return { data: { id: documentId } };
         }
     },
     activityLogs: {
@@ -152,24 +131,13 @@ const mockApi = {
             saveDB(db);
             return { data: { id: documentId } };
         }
-    },
-    imageAnalysis: {
-        analyze: async (_formData: any) => {
-            await delay(1500);
-            const foods = [
-                { name: "Apple", calories: 95 },
-                { name: "Banana", calories: 105 },
-                { name: "Avocado Toast", calories: 250 },
-                { name: "Pizza Slice", calories: 300 },
-            ];
-            const randomFood = foods[Math.floor(Math.random() * foods.length)];
-            return {
-                data: {
-                    result: randomFood
-                }
-            };
-        }
     }
 };
 
 export default mockApi;
+
+/*
+এখনই এটি সরানোর দরকার নেই। আপনার অ্যাপটি যখন পুরোপুরি তৈরি হয়ে যাবে 
+এবং আপনি আসল ডাটাবেজ (যেমন MongoDB বা Firebase) ব্যবহার শুরু করবেন, 
+তখন আমরা এই লাইনটি এবং পুরো mockApi ফাইলটিই ফেলে দেব। এখন এটি থাকলে আপনার ডেভেলপমেন্ট এবং ডিজাইন চেক করতে সুবিধা হবে।
+*/

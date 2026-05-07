@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import CustomCalendar from './CustomCalendar';
-import { Pencil, Trash2 } from 'lucide-react'; // Make sure to install lucide-react
+import { Pencil, Trash2 ,Scale, Droplets, Activity, Calendar as CalendarIcon, Plus} from 'lucide-react'; // Make sure to install lucide-react
+import styles from './ActivityLog.module.css';
 
 interface HealthEntry {
   id: number;
@@ -9,7 +10,7 @@ interface HealthEntry {
   sugar: string;
   bpSystolic: string;
   bpDiastolic: string;
-  bmi: string;
+  
 }
 
 const ActivityLog = () => {
@@ -18,9 +19,11 @@ const ActivityLog = () => {
     return savedEntries ? JSON.parse(savedEntries) : [];
   });
 
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false); // NEW: Track if we are in "Edit Mode"
+  const [isEditMode, setIsEditMode] = useState(false);
   const [editingEntry, setEditingEntry] = useState<HealthEntry | null>(null); // NEW: Track which entry is being edited
 
   // Form States
@@ -52,7 +55,7 @@ const ActivityLog = () => {
 
   // NEW: Delete Function
   const handleDelete = (id: number) => {
-    if (window.confirm("Are you sure you want to delete this log?")) {
+    if (window.confirm("Delete this health record?")) {
       setEntries(entries.filter(entry => entry.id !== id));
     }
   };
@@ -82,7 +85,7 @@ const ActivityLog = () => {
         sugar, 
         bpSystolic, 
         bpDiastolic,
-        bmi: "" // Ensure this matches your interface
+        
       };
       setEntries([newEntry, ...entries]);
     }
@@ -92,83 +95,114 @@ const ActivityLog = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12">
+   <div className="p-6 min-h-screen  text-slate-300">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
         
-        <div className="flex-1">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold dark:text-white">Activity Log</h1>
-            <div className="flex gap-3">
-              {/* Toggle Edit Mode Button */}
+        {/* --- MAIN CONTENT AREA --- */}
+        <div className="flex-1 space-y-8">
+          <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-white tracking-tight">Activity Log</h1>
+              <p className="text-slate-500 text-sm mt-1">Track your vital signs and health progression</p>
+            </div>
+            
+            <div className="flex items-center gap-3">
               <button 
                 onClick={() => setIsEditMode(!isEditMode)}
-                className={`px-6 py-2 rounded-xl font-medium transition-all border ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-300 border ${
                   isEditMode 
-                  ? "bg-blue-100 border-slate-200 text-blue-700" 
-                  : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                  ? "bg-amber-500/10 border-amber-500/50 text-amber-500" 
+                  : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
                 }`}
               >
-                {isEditMode ? "Done" : "Edit"}
+                <Pencil size={16} /> {isEditMode ? "Finish Editing" : "Manage Logs"}
               </button>
               <button 
                 onClick={handleOpenAddModal}
-                className="bg-blue-800 hover:bg-blue-700 text-white px-6 py-2 rounded-xl transition-all shadow-lg"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-900/20 font-semibold"
               >
-                + Add Entry
+                <Plus size={20} /> Add New Entry
               </button>
             </div>
-          </div>
+          </header>
 
-          {entries.length === 0 ? (
-            <div className="py-20 bg-white dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800 text-center">
-              <p className="text-slate-500 font-medium">No entries recorded yet.</p>
-            </div>
-          ) : (
-            <div className="grid gap-4">
-              {entries.map((entry) => (
-                <div key={entry.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    {/* CONDITIONAL CRUD BUTTONS pencil for edit and trash for delete */}
-                    {isEditMode && (
-                      <div className="flex gap-2 mr-2">
+          {/* --- LOG ENTRIES --- */}
+          <div className="space-y-4">
+            {entries.length === 0 ? (
+              <div className="py-24 bg-slate-900/50 rounded-4xl border-2 border-dashed border-slate-800 text-center">
+                <Activity size={48} className="mx-auto text-slate-700 mb-4" />
+                <p className="text-slate-500 font-medium">Your health journey starts here. Add your first log.</p>
+              </div>
+            ) : (
+              entries.map((entry) => (
+                <div 
+                  key={entry.id} 
+                  className="group relative bg-[#111827] hover:bg-[#161e31] p-1 rounded-2xl border border-slate-800 transition-all duration-300 shadow-xl overflow-hidden"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center gap-6 p-5">
+                    
+                    {/* Date Column */}
+                    <div className="flex items-center gap-4 min-w-35">
+                      <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
+                        <CalendarIcon size={20} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Record Date</p>
+                        <p className="font-bold text-white">{entry.date}</p>
+                      </div>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 border-l border-slate-800/50 pl-0 md:pl-8">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 text-slate-500">
+                          <Scale size={14} />
+                          <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Weight</span>
+                        </div>
+                        <p className="antialiased text-xl font-bold text-white">{entry.weight}<span className="text-xs text-slate-500 ml-1">kg</span></p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 text-slate-500">
+                          <Droplets size={14} />
+                          <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Sugar</span>
+                        </div>
+                        <p className="antialiased text-xl font-bold text-[#f87171]">{entry.sugar}</p>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 text-slate-500">
+                          <Activity size={14} />
+                          <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Pressure</span>
+                        </div>
+                        <p className="antialiased text-xl font-bold text-emerald-500">{entry.bpSystolic}<span className="text-slate-600 mx-0.5">/</span>{entry.bpDiastolic}</p>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    {isEditMode ? (
+                      <div className="flex gap-2 animate-in slide-in-from-right-4 duration-300">
                         <button 
                           onClick={() => handleOpenEditModal(entry)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="antialiased p-3 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-xl transition-all"
                         >
                           <Pencil size={18} />
                         </button>
                         <button 
                           onClick={() => handleDelete(entry.id)}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          className="antialiased p-3 bg-rose-500/10 text-rose-400 hover:bg-rose-500/30 hover:text-white rounded-xl transition-all"
                         >
                           <Trash2 size={18} />
                         </button>
                       </div>
+                    ) : (
+                      <div className="hidden md:block w-1 bg-blue-600/0 group-hover:bg-blue-600/30 h-12 rounded-full transition-all" />
                     )}
-                    <div>
-                      <p className="text-sm text-slate-500">{entry.date}</p>
-                      <p className="font-bold text-lg dark:text-white">Daily Metrics</p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-6 text-center">
-                    <div>
-                      <p className="text-[10px] text-slate-400 uppercase">Weight</p>
-                      <p className="font-semibold dark:text-slate-200">{entry.weight}kg</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-400 uppercase">Sugar</p>
-                      <p className="font-semibold text-red-400">{entry.sugar}</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-400 uppercase">BP</p>
-                      <p className="font-semibold text-emerald-500">{entry.bpSystolic}/{entry.bpDiastolic}</p>
-                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+              ))
+            )}
+          </div>
         </div>
 
         {/* --- RIGHT SIDE: CALENDAR (Remains same) --- */}
@@ -199,14 +233,36 @@ const ActivityLog = () => {
                 <h2 className="text-xl font-bold dark:text-white">
                   {editingEntry ? "Edit Health Log" : "New Health Log"}
                 </h2>
-                <p className="text-xs text-blue-500 font-bold">
-                 Target Date: {selectedDate.toDateString()}
-                </p>
+               <button 
+            onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+            className="flex items-center gap-2 mt-2 group cursor-pointer"
+          >
+            <div className="p-1.5 bg-blue-500/10 rounded-lg text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all">
+              <CalendarIcon size={14} />
+            </div>
+            <span className="text-xs text-blue-400 font-bold uppercase tracking-wider">
+              {selectedDate.toDateString()}
+            </span>
+          </button>
+          
               </div>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>
             </div>
             
             <form onSubmit={handleSave} className="p-6 space-y-4">
+        {/* INLINE CALENDAR POPPER */}
+        {isDatePickerOpen && (
+          <div className="animate-in fade-in zoom-in-3 duration-400 bg-slate-900 border border-slate-800 p-4 rounded-3xl mb-4 shadow-inner">
+            <CustomCalendar 
+              value={selectedDate} 
+              onChange={(date) => {
+                setSelectedDate(date);
+                setIsDatePickerOpen(false); // Close after selection
+              }} 
+            />
+          </div>
+        )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold mb-1 uppercase text-slate-400">Weight (kg)</label>
@@ -232,8 +288,11 @@ const ActivityLog = () => {
               </button>
             </form>
           </div>
+          
         </div>
       )}
+
+      
     </div>
   );
 };
