@@ -10,7 +10,7 @@ import Layout from "./pages/Layout"
 import { useAppContext } from "./context/Appcontext"
 
 const App = () => {
-  const { user, isUserFetched, onboardingCompleted } = useAppContext()
+  const { user, isUserFetched} = useAppContext()
 
   // ডাটা ফেচ হওয়া পর্যন্ত ওয়েটিং স্ক্রিন
   if (!isUserFetched) return <div className="h-screen flex items-center justify-center bg-slate-950 text-white">Loading...</div>
@@ -24,7 +24,7 @@ const App = () => {
       <Route path='/' element={user ? <Layout /> : <Navigate to="/login" />}>
         
         {/* যদি অনবোর্ডিং শেষ না হয়, তবে সবসময় অনবোর্ডিং পেজে পাঠাবে */}
-        <Route index element={onboardingCompleted ? <Dashboard /> : <Navigate to="/onboarding" />} />
+        <Route index element={ <Dashboard /> }/>
         
         <Route path='activityLog' element={<ActivityLog />} />
 	  <Route path='aiPlanner' element={<AiAssistant />} />
