@@ -62,11 +62,7 @@ const inputStyle = `w-full p-3 rounded-xl border outline-none transition-all dur
       name: formData.name,
       dob: formData.dob,
       age: Number(formData.age),
-<<<<<<< HEAD
-      height: Number(formData.height), // height সেভ করা হচ্ছে
-=======
       height: Number(formData.height), // height is being saved
->>>>>>> ea49fe0ad5650c7f785ff9ee31b36aa5758b457b
       gender: formData.gender || undefined, /////baki kaj ekhane
       bloodGroup: formData.bloodGroup || undefined, /////baki kaj ekhane
       profileImage: formData.profileImage || undefined
@@ -161,60 +157,6 @@ const inputStyle = `w-full p-3 rounded-xl border outline-none transition-all dur
 
       
 
-<<<<<<< HEAD
-              {/* Height Field (Weight এর পরিবর্তে) */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                  Height (cm) <Ruler size={14} />
-                </label>
-                <input 
-                  type="number"
-                  placeholder="e.g. 165"
-                  value={formData.height}
-                  onChange={(e) => setFormData({...formData, height: e.target.value})}
-                  className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-blue-600/50"
-                />
-              </div>
-
-{/* Gender Section */}
-  <div className="space-y-2">
-    <label className="text-sm font-medium text-slate-400">Gender</label>
-    <select 
-      value={formData.gender}
-      onChange={(e) => setFormData({...formData, gender: e.target.value})}
-      className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none"
-    >
-      <option value="">Select Gender</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
-      <option value="Other">Other</option>
-    </select>
-  </div>
-
-  {/* Blood Group Section */}
-  <div className="space-y-2">
-    <label className="text-sm font-medium text-slate-400">Blood Group</label>
-    <select 
-      value={formData.bloodGroup}
-      onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}
-      className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none"
-    >
-      <option value="">Select Group</option>
-      <option value="A+">A+</option>
-      <option value="A-">A-</option>
-      <option value="B+">B+</option>
-      <option value="B-">B-</option>
-      <option value="O+">O+</option>
-      <option value="O-">O-</option>
-      <option value="AB+">AB+</option>
-      <option value="AB-">AB-</option>
-    </select>
-  </div>
-
-
-
-            </div>
-=======
              {/* Height Field */}
           <div className="flex flex-col gap-2">
             <label className="text-slate-400 text-sm font-medium ml-1">Height (cm)</label>
@@ -226,7 +168,6 @@ const inputStyle = `w-full p-3 rounded-xl border outline-none transition-all dur
               placeholder="e.g. 165"
             />
           </div>
->>>>>>> ea49fe0ad5650c7f785ff9ee31b36aa5758b457b
 
 {/* Gender Section */}
   <div className="flex flex-col gap-2">
