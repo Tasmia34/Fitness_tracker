@@ -1,9 +1,10 @@
+// @ts-ignore: Ignore missing module declaration for recharts
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from 'recharts';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/Appcontext';
 
 const CaloriesChart = () => {
 
-    const { allActivityLogs, allFoodLogs } = useAppContext();
+    const { allActivityLogs } = useAppContext();
 
     const getData = () => {
         const data = [];
@@ -15,15 +16,13 @@ const CaloriesChart = () => {
             const dateString = date.toISOString().split('T')[0];
             const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
 
-            const dailyFood = allFoodLogs.filter(log => log.createdAt?.split('T')[0] === dateString);
             const dailyActivity = allActivityLogs.filter(log => log.createdAt?.split('T')[0] === dateString);
 
-            const intake = dailyFood.reduce((sum, item) => sum + item.calories, 0);
             const burn = dailyActivity.reduce((sum, item) => sum + (item.calories || 0), 0);
 
             data.push({
                 name: dayName,
-                Intake: intake,
+                Intake: 0,
                 Burn: burn,
                 date: dateString
             });

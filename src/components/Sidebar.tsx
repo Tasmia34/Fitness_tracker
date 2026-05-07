@@ -1,15 +1,17 @@
+import { useAppContext } from "../context/Appcontext";
 import { NavLink } from "react-router-dom";
-import { ActivityIcon, HomeIcon, UserIcon, UtensilsIcon, Moon, Sun } from "lucide-react";
+import { ActivityIcon, HomeIcon, UserIcon , Moon, Sun , LogOut, LockIcon} from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 const Sidebar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { logout } = useAppContext(); // take logout function from conext
 
   const navItems = [
     { path: '/', label: 'Home', icon: HomeIcon },
-    { path: '/food', label: 'Food', icon: UtensilsIcon },
     { path: '/activityLog', label: 'Activity', icon: ActivityIcon }, // Path must match your App.jsx
     { path: '/profile', label: 'Profile', icon: UserIcon },
+    { path: '/login', label: 'Login/Signup', icon: LockIcon },
   ];
 
   return (
@@ -38,6 +40,8 @@ const Sidebar = () => {
       </div>
 
       {/* Theme Toggle Button */}
+
+      <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
       <button
         onClick={toggleTheme}
         className="mt-auto flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-all"
@@ -45,6 +49,15 @@ const Sidebar = () => {
         {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         <span className="font-medium">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
       </button>
+
+        <button 
+          onClick={logout}
+          className="flex items-center gap-3 px-4 py-3 w-full text-blue-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+        >
+          <LogOut size={20} />
+          <span className="font-medium">Logout</span>
+        </button>
+</div>
     </nav>
   );
 };

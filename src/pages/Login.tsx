@@ -26,15 +26,24 @@ const Login: React.FC = () => {
   const navigate = useNavigate()
   const { login, signup, user } = useAppContext()
 
+  /*  -- to remove the functionality of auto redirecting the user to homepage while he is logged in
   useEffect(() => {
     if (user) {
       navigate('/')
     }
   }, [user, navigate])
+*/
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
+    if (state === 'signup' && !passwordRegex.test(password)) {
+      alert("Password must be at least 8 characters long and contain at least one uppercase letter.");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       if (state === 'login') {
@@ -42,6 +51,7 @@ const Login: React.FC = () => {
       } else {
         await signup({ username, email, password });
       }
+      navigate('/');
     } catch (error) {
       const err = error as AuthError;
       console.error("Authentication Error:", err);

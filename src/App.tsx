@@ -1,6 +1,5 @@
 import { Route, Routes, Navigate } from "react-router-dom"
 import Dashboard from "./pages/Dashboard" 
-import FoodLog from "./pages/FoodLog"
 import ActivityLog from "./pages/ActivityLog"
 import Login from "./pages/Login"
 import Profile from "./pages/Profile"
@@ -16,19 +15,21 @@ const App = () => {
 
   return (
     <Routes>
-      {/* যদি লগইন না থাকে তবে লগইন পেজ, আর থাকলে ড্যাশবোর্ডে পাঠিয়ে দাও */}
-      <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+      {/* ১. পাবলিক লগইন রাউট: এটি তখন কাজ করবে যখন ইউজার লগআউট অবস্থায় থাকবে */}
+      <Route path="/login" element={<Login />} />
 
-      {/* প্রোটেক্টেড রাউটস: এখানে শুধু লগইন করা ইউজার ঢুকতে পারবে */}
+      {/* ২. প্রোটেক্টেড রাউটস: এখানে শুধু লগইন করা ইউজার ঢুকতে পারবে */}
       <Route path='/' element={user ? <Layout /> : <Navigate to="/login" />}>
         
         {/* যদি অনবোর্ডিং শেষ না হয়, তবে সবসময় অনবোর্ডিং পেজে পাঠাবে */}
         <Route index element={onboardingCompleted ? <Dashboard /> : <Navigate to="/onboarding" />} />
         
-        <Route path='food' element={<FoodLog />} />
         <Route path='activityLog' element={<ActivityLog />} />
         <Route path='profile' element={<Profile />} /> 
         <Route path='onboarding' element={<Onboarding />} />
+        
+        {/* ৩. এটিই সেই লাইন যা আপনি চাচ্ছেন: এখন লগইন থাকা অবস্থায় /login এ গেলে সাইডবারসহ পেজটি দেখাবে */}
+        <Route path='login' element={<Login />} />
       </Route>
 
       {/* ভুল লিঙ্কে গেলে মেইন পেজে পাঠিয়ে দাও */}

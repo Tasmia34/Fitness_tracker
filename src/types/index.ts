@@ -3,11 +3,14 @@ export type User = {
     id: string;
     username: string;
     email: string;
+    password: string;
     token: string;
     name?: string;       
     dob?: string;        // Date of Birth
     age?: number;        
     height?: number; 
+    gender?: string;
+    bloodGroup?: string;
     profileImage?: string ;    
     documentId?: string;
     createdAt?: string;
@@ -28,6 +31,7 @@ export interface ActivityEntry {
     calories: number;
     date: string;
     documentId?: string;
+    createdAt: string; 
 }
 
 // ৪. পুরো অ্যাপের কনটেক্সট টাইপ (এখান থেকেও Food বাদ দেওয়া হয়েছে)
