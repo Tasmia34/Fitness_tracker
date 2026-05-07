@@ -59,20 +59,32 @@ const ActivityLog = () => {
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
+ const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Format the date based on what is currently selected in the calendar
+    const dateToSave = selectedDate.toLocaleDateString();
+
     if (editingEntry) {
       // UPDATE logic
       setEntries(entries.map(e => e.id === editingEntry.id ? {
-        ...editingEntry, weight, sugar, bpSystolic, bpDiastolic
+        ...editingEntry, 
+        date: dateToSave, // <--- This now updates the date to the calendar selection
+        weight, 
+        sugar, 
+        bpSystolic, 
+        bpDiastolic
       } : e));
     } else {
       // CREATE logic
       const newEntry: HealthEntry = {
         id: Date.now(),
-        date: selectedDate.toLocaleDateString(),
-        weight, sugar, bpSystolic, bpDiastolic
+        date: dateToSave,
+        weight, 
+        sugar, 
+        bpSystolic, 
+        bpDiastolic,
+        bmi: "" // Ensure this matches your interface
       };
       setEntries([newEntry, ...entries]);
     }
@@ -190,7 +202,7 @@ const ActivityLog = () => {
                   {editingEntry ? "Edit Health Log" : "New Health Log"}
                 </h2>
                 <p className="text-xs text-blue-500 font-bold">
-                  {editingEntry ? editingEntry.date : selectedDate.toDateString()}
+                 Target Date: {selectedDate.toDateString()}
                 </p>
               </div>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>

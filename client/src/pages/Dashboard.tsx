@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import CustomCalendar from './CustomCalendar';
 import { Activity, Scale, Droplets } from 'lucide-react';
+import { HealthReportChart} from './HealthCharts';
 
 interface HealthEntry {
   id: number;
@@ -16,7 +17,8 @@ const Dashboard = () => {
   const [lastEntry, setLastEntry] = useState<HealthEntry | null>(null);
   const [calculatedBmi, setCalculatedBmi] = useState<string>('--.-');
   const [selectedDate, setSelectedDate] = useState(new Date());
-
+  const [viewType, setViewType] = useState<'bar' | 'line'>('bar');
+  const [chartData, setChartData] = useState<any[]>([]);
   // Static height for now
   const userHeightCm = 146;
 
@@ -28,6 +30,16 @@ const Dashboard = () => {
         const latest = parsed[0];
         setLastEntry(latest);
 
+
+        // Prepare data for Recharts (limit to last 7 entries for cleanliness)
+      const formatted = parsed.slice(0, 7).map((entry: HealthEntry) => ({
+        date: entry.date.split('/')[0] + '/' + entry.date.split('/')[1], // Short date
+        weight: parseFloat(entry.weight),
+        sugar: parseFloat(entry.sugar),
+        systolic: parseFloat(entry.bpSystolic),
+      })).reverse(); // Oldest to newest for the graph
+      
+      setChartData(formatted);
         // --- BMI CALCULATION LOGIC ---
         const weight = parseFloat(latest.weight);
         if (weight > 0 && userHeightCm > 0) {
@@ -106,7 +118,7 @@ const status = getBmiStatus(calculatedBmi);
             {/* Sugar & BP Card */}
             <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 sm:col-span-2">
               <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-2xl text-red-600">
+                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-2xl text-red-600/60">
                   <Droplets size={24} />
                 </div>
                 <h3 className="font-semibold dark:text-slate-200">Blood Glucose & Pressure</h3>
@@ -125,7 +137,27 @@ const status = getBmiStatus(calculatedBmi);
               </div>
             </div>
           </div>
+
+
+{/* Main Large Chart in the Sugar/BP section */}
+<div className="mt-6 bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800">
+  <div className="flex justify-between items-center mb-4">
+    <h3 className="font-semibold dark:text-slate-200">Weekly Health Report</h3>
+    
+    {/* Toggle Button */}
+    <button 
+      onClick={() => setViewType(viewType === 'bar' ? 'line' : 'bar')}
+      className="text-xs font-bold uppercase tracking-widest px-4 py-2 bg-slate-100 dark:bg-slate-800 dark:text-slate-300 rounded-lg hover:bg-slate-200 hover:text-blue-400 transition-all"
+    >
+      Show {viewType === 'bar' ? 'Line' : 'Bar'} View
+    </button>
+  </div>
+
+  <HealthReportChart data={chartData} chartType={viewType} />
+</div>
+
         </div>
+
 
         {/* --- RIGHT SIDE: CALENDAR --- */}
         <div className="w-full md:w-87.5">
