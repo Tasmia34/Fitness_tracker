@@ -1,0 +1,152 @@
+/**
+ * Scoped Calendar Styles
+ * Targeted specifically for react-calendar within the Health Monitor project.
+ */
+
+/* 1. MAIN CONTAINER
+   Handles the outer card styling and ensures layout stability. */
+.calendarContainer {
+  padding: 1rem;
+  background: white;
+  border-radius: 1.5rem;
+  border: 1px solid #e2e8f0; /* slate-200 */
+  display: flex;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+/* Dark Mode Overrides for Container */
+:global(.dark) .calendarContainer {
+  background: #c5cad4; /* User specific slate-900 override */
+  border-color: #1e293b; /* slate-800 */
+}
+
+/* 2. BASE LIBRARY OVERRIDES
+   Resets the library's default styling and ensures fixed sizing. */
+.calendarContainer :global(.react-calendar) {
+  width: 100%;
+  border: none;
+  font-family: inherit;
+  background: transparent;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Prevents the container from jumping between 5-row and 6-row months */
+.calendarContainer :global(.react-calendar__viewContainer) {
+  min-height: 300px; 
+}
+
+/* Ensures days stay in a clean, consistent 7-column grid */
+.calendarContainer :global(.react-calendar__month-view__days) {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+/* 3. NAVIGATION & HEADERS
+   Styles the month/year selection and weekday labels. */
+.calendarContainer :global(.react-calendar__navigation button) {
+  color: #1e293b;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+
+:global(.dark) .calendarContainer :global(.react-calendar__navigation button) {
+  color: #f8fafc;
+}
+
+/* Clean weekday labels (removes default library underlines) */
+.calendarContainer :global(.react-calendar__month-view__weekdays__weekday abbr) {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #7e92af; /* slate-400 */
+}
+
+/* 4. TILE STYLING (The "Days")
+   Logic for Today vs. Selected Active Date. */
+
+/* Base Tile: Standard day buttons */
+.calendarContainer :global(.react-calendar__tile) {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* TODAY: Solid background highlight */
+.calendarContainer :global(.react-calendar__tile--now) {
+  background: #818eaa !important; 
+  color: white !important; /* White text for contrast on solid background */
+  border-radius: 0.75rem;
+  font-weight: bold;
+}
+
+:global(.dark) .calendarContainer :global(.react-calendar__tile--now) {
+  background: rgba(30, 58, 138, 0.4) !important;
+  color: #93c5fd !important;
+}
+
+/* ACTIVE DATE: Border-only style (applied ONLY if it's not today) */
+.calendarContainer :global(.react-calendar__tile--active:not(.react-calendar__tile--now)) {
+  background: transparent !important;
+  color: #818eaa !important;
+  border: 2px solid #818eaa !important;
+  border-radius: 0.75rem;
+  transform: scale(1.05); /* Cute pop-out effect */
+}
+
+/* 5. NEIGHBORING MONTHS 
+   Styles dates that belong to the previous or next month */
+
+.calendarContainer :global(.react-calendar__month-view__days__day--neighboringMonth) {
+  /* Use a lighter color so they look "faded" or disabled */
+  color: #92a4bd !important; 
+  opacity: 0.5; /* Makes them look subtler without picking a specific hex */
+}
+
+/* 1. Change the "Black" numbers (Standard Weekdays) 
+   Excludes Today (.react-calendar__tile--now) */
+.calendarContainer :global(.react-calendar__month-view__days__day:not(.react-calendar__month-view__days__day--weekend):not(.react-calendar__tile--now)) {
+  color: #475569 !important;
+}
+
+/* 2. Change the "Red" numbers (Weekends) 
+   Excludes Today (.react-calendar__tile--now) */
+.calendarContainer :global(.react-calendar__month-view__days__day--weekend:not(.react-calendar__tile--now)) {
+  color: #bb7474 !important;
+}
+
+/* 3. Previous/Next Month Dates (Neighboring Months)
+   Making them look faded so they are clearly different */
+.calendarContainer :global(.react-calendar__month-view__days__day--neighboringMonth) {
+  color: #94a3b8 !important;
+  opacity: 0.5;
+}
+
+
+/* Styling the "May 2026" Heading */
+.calendarContainer :global(.react-calendar__navigation__label) {
+  color: #818eaa !important; /* Your signature blue color */
+  font-weight: 800 !important;
+  font-size: 1.1rem;
+}
+
+
+
+/* Navigation Buttons (Arrows) Hover State */
+.calendarContainer :global(.react-calendar__navigation button:enabled:hover),
+.calendarContainer :global(.react-calendar__navigation button:enabled:focus) {
+  /* This changes that box color you see on the right in your image */
+  background-color: rgba(129, 142, 170, 0.2) !important; 
+  color: #818eaa !important;
+}
+
+/* Navigation Buttons Dark Mode Hover */
+:global(.dark) .calendarContainer :global(.react-calendar__navigation button:enabled:hover) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
