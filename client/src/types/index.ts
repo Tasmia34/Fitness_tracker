@@ -1,6 +1,6 @@
-// User
+// ১. মূল ইউজার টাইপ (আপনার নতুন প্রোফাইল ডিজাইন অনুযায়ী)
 export type User = {
-     id: string;
+    id: string;
     username: string;
     email: string;
     token: string;
@@ -13,64 +13,24 @@ export type User = {
     createdAt?: string;
 } | null;
 
-// Credentials
+// ২. লগইন বা সাইনআপের জন্য শংসাপত্র
 export type Credentials = {
     username?: string;
     email: string;
     password: string;
 };
 
-// User Form Data
-export interface UserData {
-    name: string;
-    age: number;
-    weight: number;
-    height: number | null;
-    goal: "lose" | "maintain" | "gain";
-    dailyCalorieIntake?: number;
-    dailyCalorieBurn?: number;
-    createdAt: string;
-}
-
-// Profile Form Data
-export interface ProfileFormData {
-    age: number;
-    weight: number;
-    height: number;
-    goal: string;
-    dailyCalorieIntake: number;
-    dailyCalorieBurn: number;
-}
-
-// Food
-export interface FormData {
-    name: string;
-    calories: number;
-    mealType: string;
-}
-
-// Food Entry
-export interface FoodEntry {
-    id: number | string;
-    name: string;
-    calories: number;
-    mealType: "breakfast" | "lunch" | "dinner" | "snack";
-    date: string;
-    createdAt?: string;
-    documentId?: string;
-}
-
-// Activity Entry
+// ৩. ব্যায়াম বা অ্যাক্টিভিটি লগের এন্ট্রি
 export interface ActivityEntry {
-    id: number;
+    id: number | string;
     name: string;
     duration: number;
     calories: number;
     date: string;
-    documentId: string;
-    createdAt?: string;
+    documentId?: string;
 }
 
+// ৪. পুরো অ্যাপের কনটেক্সট টাইপ (এখান থেকেও Food বাদ দেওয়া হয়েছে)
 export type AppContextType = {
     user: User;
     setUser: React.Dispatch<React.SetStateAction<User>>;
@@ -85,8 +45,9 @@ export type AppContextType = {
     setAllActivityLogs: React.Dispatch<React.SetStateAction<ActivityEntry[]>>;
 };
 
+// ৫. অ্যাপ শুরু হওয়ার সময় ডিফল্ট ডাটা
 export const initialState: AppContextType = {
-     user: null,
+    user: null,
     setUser: () => {},
     login: async () => {},
     signup: async () => {},
