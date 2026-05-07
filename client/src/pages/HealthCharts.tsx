@@ -3,6 +3,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid 
 } from 'recharts';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const HealthReportChart = ({ data, chartType }: { data: any[], chartType: 'bar' | 'line' }) => {
 
   const commonElements = [
@@ -17,6 +18,7 @@ export const HealthReportChart = ({ data, chartType }: { data: any[], chartType:
     />,
     <YAxis key="yaxis" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />,
      <Tooltip 
+     key="tooltip"
     cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }} 
     contentStyle={{ 
       backgroundColor: '#0f172a', 

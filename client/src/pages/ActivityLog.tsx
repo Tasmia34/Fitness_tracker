@@ -25,7 +25,6 @@ const ActivityLog = () => {
 
   // Form States
   const [weight, setWeight] = useState('');
-  const [bmi, setBmi] = useState('');
   const [sugar, setSugar] = useState('');
   const [bpSystolic, setBpSystolic] = useState('');
   const [bpDiastolic, setBpDiastolic] = useState('');
@@ -37,7 +36,7 @@ const ActivityLog = () => {
   // Handle opening modal for NEW entry
   const handleOpenAddModal = () => {
     setEditingEntry(null);
-    setWeight(''); setBmi(''); setSugar(''); setBpSystolic(''); setBpDiastolic('');
+    setWeight('');  setSugar(''); setBpSystolic(''); setBpDiastolic('');
     setIsModalOpen(true);
   };
 
@@ -45,7 +44,6 @@ const ActivityLog = () => {
   const handleOpenEditModal = (entry: HealthEntry) => {
     setEditingEntry(entry);
     setWeight(entry.weight);
-    setBmi(entry.bmi);
     setSugar(entry.sugar);
     setBpSystolic(entry.bpSystolic);
     setBpDiastolic(entry.bpDiastolic);
@@ -106,11 +104,11 @@ const ActivityLog = () => {
                 onClick={() => setIsEditMode(!isEditMode)}
                 className={`px-6 py-2 rounded-xl font-medium transition-all border ${
                   isEditMode 
-                  ? "bg-amber-100 border-amber-300 text-amber-700" 
+                  ? "bg-blue-100 border-slate-200 text-blue-700" 
                   : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                 }`}
               >
-                {isEditMode ? "Done Editing" : "Edit"}
+                {isEditMode ? "Done" : "Edit"}
               </button>
               <button 
                 onClick={handleOpenAddModal}
@@ -130,7 +128,7 @@ const ActivityLog = () => {
               {entries.map((entry) => (
                 <div key={entry.id} className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    {/* CONDITIONAL CRUD BUTTONS */}
+                    {/* CONDITIONAL CRUD BUTTONS pencil for edit and trash for delete */}
                     {isEditMode && (
                       <div className="flex gap-2 mr-2">
                         <button 

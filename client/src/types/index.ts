@@ -1,16 +1,15 @@
 // User
 export type User = {
-    id: string;
-    email: string;
+     id: string;
     username: string;
+    email: string;
     token: string;
+    name?: string;       
+    dob?: string;        // Date of Birth
+    age?: number;        
+    height?: number; 
+    profileImage?: string ;    
     documentId?: string;
-    age?: number;
-    weight?: number;
-    height?: number;
-    goal?: "lose" | "maintain" | "gain";
-    dailyCalorieIntake?: number;
-    dailyCalorieBurn?: number;
     createdAt?: string;
 } | null;
 
@@ -82,14 +81,12 @@ export type AppContextType = {
     logout: () => void;
     onboardingCompleted: boolean;
     setOnboardingCompleted: React.Dispatch<React.SetStateAction<boolean>>;
-    allFoodLogs: FoodEntry[];
-    setAllFoodLogs: React.Dispatch<React.SetStateAction<FoodEntry[]>>;
     allActivityLogs: ActivityEntry[];
     setAllActivityLogs: React.Dispatch<React.SetStateAction<ActivityEntry[]>>;
 };
 
 export const initialState: AppContextType = {
-    user: null,
+     user: null,
     setUser: () => {},
     login: async () => {},
     signup: async () => {},
@@ -98,8 +95,6 @@ export const initialState: AppContextType = {
     logout: () => {},
     onboardingCompleted: false,
     setOnboardingCompleted: () => {},
-    allFoodLogs: [],
-    setAllFoodLogs: () => {},
     allActivityLogs: [],
     setAllActivityLogs: () => {},
 };
