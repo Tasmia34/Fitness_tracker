@@ -12,7 +12,7 @@ const Sidebar = () => {
     { path: '/', label: 'Home', icon: HomeIcon },
     { path: '/profile', label: 'Profile', icon: UserIcon },
 
-    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/activityLog', label: 'Activity', icon: ActivityIcon }, 
     { path: '/aiPlanner', label: 'AI Assistant', icon: Bot },
         { path: '/login', label: 'Login/Signup', icon: LockIcon },

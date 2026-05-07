@@ -104,7 +104,7 @@ const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
                   onChange={(e) => setUsername(e.target.value)} 
                   value={username}
                   type="text" 
-                  placeholder="Amélie Laurent" 
+                  placeholder="Alexender " 
                   className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 transition-all outline-none"
                   required 
                 />
@@ -181,7 +181,7 @@ const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
                   onClick={() => setState('login')} 
                   className="text-sky-600 hover:text-sky-700 font-bold underline-offset-4 hover:underline"
                 >
-                  Log in here
+                  Sign in here
                 </button>
               </p>
             )}
