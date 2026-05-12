@@ -6,29 +6,37 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const HealthReportChart = ({ data, chartType }: { data: any[], chartType: 'bar' | 'line' }) => {
 
-  const commonElements = [
- 
-    <XAxis 
-      key="xaxis" 
-      dataKey="date" 
-      axisLine={false} 
-      tickLine={false} 
-      tick={{fontSize: 10, fill: '#94a3b8'}} 
-      dy={10} 
-    />,
-    <YAxis key="yaxis" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />,
-     <Tooltip 
-     key="tooltip"
+const commonElements = [
+  <XAxis 
+    key="xaxis" 
+    dataKey="date" 
+    axisLine={false} 
+    tickLine={false} 
+    tick={{fontSize: 10, fill: '#94a3b8'}} 
+    dy={10} 
+  />,
+  <YAxis key="yaxis" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />,
+  <Tooltip 
+    key="tooltip"
     cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }} 
+    // ADD THIS: labelFormatter customizes the header of the tooltip
+    labelFormatter={(value) => `Date: ${value}`}
+    // ADD THIS: formatter clarifies the unit for each bar/line
+    formatter={(value: any, name: string) => {
+      if (name === "sugar") return [`${value} mg/dL`, "Sugar Level"];
+      if (name === "systolic") return [`${value} mmHg`, "Systolic BP"];
+      return [value, name];
+    }}
     contentStyle={{ 
       backgroundColor: '#0f172a', 
       border: 'none', 
       borderRadius: '12px',
-      color: '#fff' 
+      color: '#fff',
+      fontSize: '12px'
     }} 
+    itemStyle={{ padding: '2px 0' }}
   />
-  ];
-
+];
 
   if (chartType === 'line') {
     return (
