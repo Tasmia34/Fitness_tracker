@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import CustomCalendar from './CustomCalendar';
 import { Pencil, Trash2 ,Scale, Droplets, Activity, Calendar as CalendarIcon, Plus} from 'lucide-react'; // Make sure to install lucide-react
 import styles from './ActivityLog.module.css';
+import MonthlyTrends from './MothlyTrends';
 
 interface HealthEntry {
   id: number;
@@ -31,6 +32,11 @@ const ActivityLog = () => {
   const [sugar, setSugar] = useState('');
   const [bpSystolic, setBpSystolic] = useState('');
   const [bpDiastolic, setBpDiastolic] = useState('');
+
+//monthly trend
+const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+const [activeMetric, setActiveMetric] = useState<'weight' | 'sugar' | 'bp'>('weight');
+
 
   useEffect(() => {
     localStorage.setItem('health_logs', JSON.stringify(entries));
@@ -94,6 +100,31 @@ const ActivityLog = () => {
     setEditingEntry(null);
   };
 
+  const trendData = entries
+  .filter(e => {
+    const d = new Date(e.date);
+    // Ensure we match the selected month and the current year
+    return d.getMonth() === selectedMonth && d.getFullYear() === new Date().getFullYear();
+  })
+  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  .map(e => ({
+    day: new Date(e.date).getDate(),
+    weight: parseFloat(e.weight),
+    sugar: parseFloat(e.sugar),
+    systolic: parseFloat(e.bpSystolic),
+    diastolic: parseFloat(e.bpDiastolic),
+  }));
+
+const COLORS = { weight: '#10b981', sugar: '#f87171', bp: '#3b82f6' };
+
+  // This filters your logs to only show entries matching the calendar date
+const filteredEntries = entries.filter(entry => 
+  entry.date === selectedDate.toLocaleDateString()
+);
+
+// We also keep track if ANY data exists for this day to show the "No entry found" card
+const hasEntryForSelectedDate = filteredEntries.length > 0;
+
   return (
    <div className="p-6 min-h-screen  text-slate-300">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
@@ -126,6 +157,101 @@ const ActivityLog = () => {
             </div>
           </header>
 
+{/* --- LOG ENTRIES --- */}
+<div className="space-y-4">
+  {/* Check 'hasEntryForSelectedDate' first. 
+     If false, show the "No Entry Found" state.
+  */}
+  {!hasEntryForSelectedDate ? (
+    <div className="py-8 bg-slate-900/50 rounded-4xl border-2 border-dashed border-slate-800 text-center animate-in fade-in duration-500">
+      <div className="p-4 bg-amber-500/10 w-fit mx-auto rounded-full mb-4">
+        <CalendarIcon size={32} className="text-amber-500/50" />
+      </div>
+      <p className="text-white font-bold text-lg">No entry found</p>
+      <p className="text-slate-500 font-medium mt-1">
+        There are no records for {selectedDate.toLocaleDateString()}
+      </p>
+      <button 
+        onClick={handleOpenAddModal}
+        className="mt-6 text-blue-400 hover:text-blue-300 font-bold text-sm flex items-center gap-2 mx-auto transition-all"
+      >
+        <Plus size={16} /> Create log for this date
+      </button>
+    </div>
+  ) : (
+    /* If entries exist for this specific date, 
+       we map through 'filteredEntries' instead of 'entries'
+    */
+    filteredEntries.map((entry) => (
+      <div 
+        key={entry.id} 
+        className="group relative bg-blue-900/20 border-blue-800/50 hover:bg-[#161e31] p-1 rounded-2xl border transition-all duration-300 shadow-xl overflow-hidden"
+      >
+        <div className="flex flex-col md:flex-row md:items-center gap-6 p-5">
+          
+          {/* Date Column */}
+          <div className="flex items-center gap-4 min-w-35">
+            <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
+              <CalendarIcon size={20} />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Record Date</p>
+              <p className="font-bold text-white">{entry.date}</p>
+            </div>
+          </div>
+
+          {/* Stats Grid filtered ones */}
+          <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 border-l border-slate-800/50 pl-0 md:pl-8">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-slate-500">
+                <Scale size={14} />
+                <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Weight</span>
+              </div>
+              <p className="antialiased text-xl font-bold text-white">{entry.weight}<span className="text-xs text-slate-500 ml-1">kg</span></p>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-slate-500">
+                <Droplets size={14} />
+                <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Sugar</span>
+              </div>
+              <p className="antialiased text-xl font-bold text-[#f87171]">{entry.sugar}</p>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-slate-500">
+                <Activity size={14} />
+                <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Blood Pressure</span>
+              </div>
+              <p className="antialiased text-xl font-bold text-emerald-500">{entry.bpSystolic}<span className="text-slate-600 mx-0.5">/</span>{entry.bpDiastolic}</p>
+            </div>
+          </div>
+
+          {/* Actions */}
+          {isEditMode ? (
+            <div className="flex gap-2 animate-in slide-in-from-right-4 duration-300">
+              <button 
+                onClick={() => handleOpenEditModal(entry)}
+                className="antialiased p-3 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-xl transition-all"
+              >
+                <Pencil size={18} />
+              </button>
+              <button 
+                onClick={() => handleDelete(entry.id)}
+                className="antialiased p-3 bg-rose-500/10 text-rose-400 hover:bg-rose-500/30 hover:text-white rounded-xl transition-all"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ) : (
+            <div className="hidden md:block w-1 bg-blue-600/0 group-hover:bg-blue-600/30 h-12 rounded-full transition-all" />
+          )}
+        </div>
+      </div>
+    ))
+  )}
+</div>
+
           {/* --- LOG ENTRIES --- */}
           <div className="space-y-4">
             {entries.length === 0 ? (
@@ -151,6 +277,9 @@ const ActivityLog = () => {
                         <p className="font-bold text-white">{entry.date}</p>
                       </div>
                     </div>
+                  
+
+                    
 
                     {/* Stats Grid */}
                     <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 border-l border-slate-800/50 pl-0 md:pl-8">
@@ -173,7 +302,7 @@ const ActivityLog = () => {
                       <div className="space-y-1">
                         <div className="flex items-center gap-1.5 text-slate-500">
                           <Activity size={14} />
-                          <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Pressure</span>
+                          <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Blood Pressure</span>
                         </div>
                         <p className="antialiased text-xl font-bold text-emerald-500">{entry.bpSystolic}<span className="text-slate-600 mx-0.5">/</span>{entry.bpDiastolic}</p>
                       </div>
@@ -210,20 +339,31 @@ const ActivityLog = () => {
           <div className="sticky top-6">
             <h2 className="text-lg font-semibold mb-4 dark:text-white">Select Date</h2>
             <div className="bg-white dark:bg-slate-900 p-2 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800">
-              <CustomCalendar value={selectedDate} onChange={setSelectedDate} />
+              <CustomCalendar value={selectedDate} onChange={setSelectedDate} entries={entries} />
             </div>
 
-            <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
-              <p className="text-xs text-blue-600 dark:text-blue-400 font-medium uppercase">Active Date</p>
-              <p className="text-lg font-bold text-blue-800 dark:text-blue-200">{selectedDate.toDateString()}</p>
-            </div>
+           <div className={`mt-4 p-4 rounded-2xl border transition-all duration-300 ${
+  hasEntryForSelectedDate 
+    ? "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800" 
+    : "bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-900/30"
+}`}>
+  <p className={`text-xs font-bold uppercase tracking-wider ${
+    hasEntryForSelectedDate ? "text-blue-600 dark:text-blue-400" : "text-amber-600 dark:text-amber-500"
+  }`}>
+    {hasEntryForSelectedDate ? "Entry Found" : "No Entry Found"}
+  </p>
+  <p className={`text-lg font-bold ${
+    hasEntryForSelectedDate ? "text-blue-800 dark:text-blue-200" : "text-amber-800 dark:text-amber-200"
+  }`}>
+    {selectedDate.toDateString()}
+  </p>
+</div>
           </div>
         </div>
       </div>
 
 
-
-
+    
       {/* --- MODAL (Handles both Create and Update) --- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
@@ -253,7 +393,7 @@ const ActivityLog = () => {
         {/* INLINE CALENDAR POPPER */}
         {isDatePickerOpen && (
           <div className="animate-in fade-in zoom-in-3 duration-400 bg-slate-900 border border-slate-800 p-4 rounded-3xl mb-4 shadow-inner">
-            <CustomCalendar 
+            <CustomCalendar entries={entries}
               value={selectedDate} 
               onChange={(date) => {
                 setSelectedDate(date);
@@ -292,7 +432,9 @@ const ActivityLog = () => {
         </div>
       )}
 
+
       
+
     </div>
   );
 };
