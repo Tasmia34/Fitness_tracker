@@ -29,6 +29,21 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [onboardingCompleted, setOnboardingCompleted] = useState(false);
     const [allActivityLogs, setAllActivityLogs] = useState<ActivityEntry[]>([]);
 
+    // লাইফসাইকেল ম্যানেজমেন্ট: ইউজার আপডেট হলে লোকাল স্টোরেজে সেভ হবে
+    useEffect(() => {
+        if (user) {
+            localStorage.setItem('user_data', JSON.stringify(user));
+        }
+    }, [user]);
+
+    // অ্যাপ লোড হওয়ার সময় লোকাল স্টোরেজ থেকে ডাটা রিকভার করা
+    useEffect(() => {
+        const savedUser = localStorage.getItem('user_data');
+        if (savedUser && !user) {
+            setUser(JSON.parse(savedUser));
+        }
+    }, []);
+    
     const signup = async (credentials: Credentials) => {
         const { data } = await mockApi.auth.register(credentials);
         setUser({ ...data.user, token: data.jwt } as User);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import CustomCalendar from './CustomCalendar';
 import { Activity, Scale, Droplets } from 'lucide-react';
 import { HealthReportChart} from './HealthCharts';
+import { useAppContext } from '../context/Appcontext';
 
 interface HealthEntry {
   id: number;
@@ -14,13 +15,14 @@ interface HealthEntry {
 }
 
 const Dashboard = () => {
+  const { user } = useAppContext();
   const [lastEntry, setLastEntry] = useState<HealthEntry | null>(null);
   const [calculatedBmi, setCalculatedBmi] = useState<string>('--.-');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewType, setViewType] = useState<'bar' | 'line'>('bar');
   const [chartData, setChartData] = useState<any[]>([]);
   // Static height for now
-  const userHeightCm = 146;
+const userHeightCm = user?.height || 160;
 
   useEffect(() => {
     const savedEntries = localStorage.getItem('health_logs');
@@ -47,9 +49,9 @@ const Dashboard = () => {
           const bmiValue = weight / (heightInMeters * heightInMeters);
           setCalculatedBmi(bmiValue.toFixed(1)); // Rounds to 1 decimal place
         }
-      }
-    }
-  }, []);
+      } 
+    }  
+  },   [user]); 
 
 
   const getBmiStatus = (bmi: string) => {

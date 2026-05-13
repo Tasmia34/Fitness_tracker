@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import CustomCalendar from './CustomCalendar';
 import { Pencil, Trash2 } from 'lucide-react'; // Make sure to install lucide-react
+import { useAppContext } from '../context/Appcontext';
 
 interface HealthEntry {
   id: number;
@@ -13,6 +14,7 @@ interface HealthEntry {
 }
 
 const ActivityLog = () => {
+   const { user } = useAppContext();
   const [entries, setEntries] = useState<HealthEntry[]>(() => {
     const savedEntries = localStorage.getItem('health_logs');
     return savedEntries ? JSON.parse(savedEntries) : [];
@@ -74,7 +76,11 @@ const ActivityLog = () => {
         bpDiastolic
       } : e));
     } else {
+
       // CREATE logic
+      const heightInMeters = (user?.height || 160) / 100;
+const currentWeight = parseFloat(weight);
+const calculatedBmi = currentWeight > 0 ? (currentWeight / (heightInMeters * heightInMeters)).toFixed(1) : "";
       const newEntry: HealthEntry = {
         id: Date.now(),
         date: dateToSave,
@@ -82,7 +88,7 @@ const ActivityLog = () => {
         sugar, 
         bpSystolic, 
         bpDiastolic,
-        bmi: "" // Ensure this matches your interface
+        bmi: calculatedBmi // Ensure this matches your interface
       };
       setEntries([newEntry, ...entries]);
     }
