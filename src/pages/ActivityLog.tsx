@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import CustomCalendar from './CustomCalendar';
 import { Pencil, Trash2 ,Scale, Droplets, Activity, Calendar as CalendarIcon, Plus} from 'lucide-react'; // Make sure to install lucide-react
-import styles from './ActivityLog.module.css';
+// import styles from './ActivityLog.module.css';
 
 
 interface HealthEntry {
@@ -34,8 +34,8 @@ const ActivityLog = () => {
   const [bpDiastolic, setBpDiastolic] = useState('');
 
 //monthly trend
-const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-const [activeMetric, setActiveMetric] = useState<'weight' | 'sugar' | 'bp'>('weight');
+// const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+// const [activeMetric, setActiveMetric] = useState<'weight' | 'sugar' | 'bp'>('weight');
 
 
   useEffect(() => {
@@ -100,22 +100,22 @@ const [activeMetric, setActiveMetric] = useState<'weight' | 'sugar' | 'bp'>('wei
     setEditingEntry(null);
   };
 
-  const trendData = entries
-  .filter(e => {
-    const d = new Date(e.date);
-    // Ensure we match the selected month and the current year
-    return d.getMonth() === selectedMonth && d.getFullYear() === new Date().getFullYear();
-  })
-  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-  .map(e => ({
-    day: new Date(e.date).getDate(),
-    weight: parseFloat(e.weight),
-    sugar: parseFloat(e.sugar),
-    systolic: parseFloat(e.bpSystolic),
-    diastolic: parseFloat(e.bpDiastolic),
-  }));
+//   const trendData = entries
+//   .filter(e => {
+//     const d = new Date(e.date);
+//     // Ensure we match the selected month and the current year
+//     return d.getMonth() === selectedMonth && d.getFullYear() === new Date().getFullYear();
+//   })
+//   .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+//   .map(e => ({
+//     day: new Date(e.date).getDate(),
+//     weight: parseFloat(e.weight),
+//     sugar: parseFloat(e.sugar),
+//     systolic: parseFloat(e.bpSystolic),
+//     diastolic: parseFloat(e.bpDiastolic),
+//   }));
 
-const COLORS = { weight: '#10b981', sugar: '#f87171', bp: '#3b82f6' };
+// const COLORS = { weight: '#10b981', sugar: '#f87171', bp: '#3b82f6' };
 
   // This filters your logs to only show entries matching the calendar date
 const filteredEntries = entries.filter(entry => 
@@ -126,15 +126,17 @@ const filteredEntries = entries.filter(entry =>
 const hasEntryForSelectedDate = filteredEntries.length > 0;
 
   return (
-   <div className="p-6 min-h-screen  text-slate-300">
+   <div className="p-6 min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-300 transition-colors duration-300">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
         
         {/* --- MAIN CONTENT AREA --- */}
+      {/* --- MAIN CONTENT AREA --- */}
         <div className="flex-1 space-y-8">
           <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-white tracking-tight">Activity Log</h1>
-              <p className="text-slate-500 text-sm mt-1">Track your vital signs and health progression</p>
+              {/* 2. Heading - Adaptive */}
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Activity Log</h1>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Track your vital signs and health progression</p>
             </div>
             
             <div className="flex items-center gap-3">
@@ -142,15 +144,15 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                 onClick={() => setIsEditMode(!isEditMode)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-300 border ${
                   isEditMode 
-                  ? "bg-amber-500/10 border-amber-500/50 text-amber-500" 
-                  : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                  ? "bg-amber-500/10 border-amber-500/50 text-amber-600 dark:text-amber-500" 
+                  : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-sm"
                 }`}
               >
                 <Pencil size={16} /> {isEditMode ? "Finish Editing" : "Manage Logs"}
               </button>
               <button 
                 onClick={handleOpenAddModal}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-900/20 font-semibold"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-500/20 font-semibold"
               >
                 <Plus size={20} /> Add New Entry
               </button>
@@ -162,43 +164,44 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
   {/* Check 'hasEntryForSelectedDate' first. 
      If false, show the "No Entry Found" state.
   */}
-  {!hasEntryForSelectedDate ? (
-    <div className="py-8 bg-slate-900/50 rounded-4xl border-2 border-dashed border-slate-800 text-center animate-in fade-in duration-500">
-      <div className="p-4 bg-amber-500/10 w-fit mx-auto rounded-full mb-4">
-        <CalendarIcon size={32} className="text-amber-500/50" />
-      </div>
-      <p className="text-white font-bold text-lg">No entry found</p>
-      <p className="text-slate-500 font-medium mt-1">
-        There are no records for {selectedDate.toLocaleDateString()}
-      </p>
-      <button 
-        onClick={handleOpenAddModal}
-        className="mt-6 text-blue-400 hover:text-blue-300 font-bold text-sm flex items-center gap-2 mx-auto transition-all"
-      >
-        <Plus size={16} /> Create log for this date
-      </button>
-    </div>
-  ) : (
+ {!hasEntryForSelectedDate ? (
+              /* 3. Empty State Card - Adaptive */
+              <div className="py-8 bg-white dark:bg-slate-900/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800 text-center">
+                <div className="p-4 bg-amber-500/10 w-fit mx-auto rounded-full mb-4">
+                  <CalendarIcon size={32} className="text-amber-500" />
+                </div>
+                <p className="text-slate-900 dark:text-white font-bold text-lg">No entry found</p>
+                <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">
+                  There are no records for {selectedDate.toLocaleDateString()}
+                </p>
+                <button 
+                  onClick={handleOpenAddModal}
+                  className="mt-6 text-blue-600 dark:text-blue-400 hover:underline font-bold text-sm flex items-center gap-2 mx-auto transition-all"
+                >
+                  <Plus size={16} /> Create log for this date
+                </button>
+              </div>
+            ) : (
     /* If entries exist for this specific date, 
        we map through 'filteredEntries' instead of 'entries'
     */
-    filteredEntries.map((entry) => (
-      <div 
-        key={entry.id} 
-        className="group relative bg-blue-900/20 border-blue-800/50 hover:bg-[#161e31] p-1 rounded-2xl border transition-all duration-300 shadow-xl overflow-hidden"
-      >
-        <div className="flex flex-col md:flex-row md:items-center gap-6 p-5">
-          
-          {/* Date Column */}
-          <div className="flex items-center gap-4 min-w-35">
-            <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
-              <CalendarIcon size={20} />
-            </div>
-            <div>
-              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Record Date</p>
-              <p className="font-bold text-white">{entry.date}</p>
-            </div>
-          </div>
+  filteredEntries.map((entry) => (
+                /* 4. Log Row - Adaptive */
+                <div 
+                  key={entry.id} 
+                  className="group relative bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-900 p-1 rounded-2xl border transition-all duration-300 shadow-sm hover:shadow-md"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center gap-6 p-5">
+                    
+                    <div className="flex items-center gap-4 min-w-35">
+                      <div className="p-3 bg-blue-500/10 rounded-xl text-blue-600 dark:text-blue-400">
+                        <CalendarIcon size={20} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Record Date</p>
+                        <p className="font-bold text-slate-900 dark:text-white">{entry.date}</p>
+                      </div>
+                    </div>
 
           {/* Stats Grid filtered ones */}
           <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 border-l border-slate-800/50 pl-0 md:pl-8">
@@ -207,7 +210,7 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                 <Scale size={14} />
                 <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Weight</span>
               </div>
-              <p className="antialiased text-xl font-bold text-white">{entry.weight}<span className="text-xs text-slate-500 ml-1">kg</span></p>
+              <p className="antialiased text-xl font-bold text-black dark:text-white">{entry.weight}<span className="text-xs text-slate-500 ml-1">kg</span></p>
             </div>
 
             <div className="space-y-1">
@@ -255,16 +258,16 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
           {/* --- LOG ENTRIES --- */}
           <div className="space-y-4">
             {entries.length === 0 ? (
-              <div className="py-24 bg-slate-900/50 rounded-4xl border-2 border-dashed border-slate-800 text-center">
+              <div className="py-24 bg-white dark:bg-slate-900/50 rounded-4xl border-2 border-dashed border-slate-800 text-center">
                 <Activity size={48} className="mx-auto text-slate-700 mb-4" />
                 <p className="text-slate-500 font-medium">Your health journey starts here. Add your first log.</p>
               </div>
             ) : (
               entries.map((entry) => (
-                <div 
-                  key={entry.id} 
-                  className="group relative bg-[#111827] hover:bg-[#161e31] p-1 rounded-2xl border border-slate-800 transition-all duration-300 shadow-xl overflow-hidden"
-                >
+               <div 
+  key={entry.id} 
+  className="group relative bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-900 p-1 rounded-2xl border transition-all duration-300 shadow-sm hover:shadow-md overflow-hidden"
+>
                   <div className="flex flex-col md:flex-row md:items-center gap-6 p-5">
                     
                     {/* Date Column */}
@@ -274,7 +277,7 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                       </div>
                       <div>
                         <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Record Date</p>
-                        <p className="font-bold text-white">{entry.date}</p>
+                        <p className="font-bold text-black dark:text-white">{entry.date}</p>
                       </div>
                     </div>
                   
@@ -282,50 +285,48 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                     
 
                     {/* Stats Grid */}
-                    <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 border-l border-slate-800/50 pl-0 md:pl-8">
+                   <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 border-l border-slate-100 dark:border-slate-800 pl-4 md:pl-8">
                       <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-slate-500">
+                        <div className="flex items-center gap-1.5 text-slate-400">
                           <Scale size={14} />
-                          <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Weight</span>
+                          <span className="text-[10px] uppercase font-bold tracking-wider">Weight</span>
                         </div>
-                        <p className="antialiased text-xl font-bold text-white">{entry.weight}<span className="text-xs text-slate-500 ml-1">kg</span></p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-white">{entry.weight}<span className="text-xs text-slate-400 ml-1">kg</span></p>
                       </div>
 
                       <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-slate-500">
+                        <div className="flex items-center gap-1.5 text-slate-400">
                           <Droplets size={14} />
-                          <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Sugar</span>
+                          <span className="text-[10px] uppercase font-bold tracking-wider">Sugar</span>
                         </div>
-                        <p className="antialiased text-xl font-bold text-[#f87171]">{entry.sugar}</p>
+                        <p className="text-xl font-bold text-rose-500 dark:text-rose-400">{entry.sugar}</p>
                       </div>
 
                       <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-slate-500">
+                        <div className="flex items-center gap-1.5 text-slate-400">
                           <Activity size={14} />
-                          <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Blood Pressure</span>
+                          <span className="text-[10px] uppercase font-bold tracking-wider">Blood Pressure</span>
                         </div>
-                        <p className="antialiased text-xl font-bold text-emerald-500">{entry.bpSystolic}<span className="text-slate-600 mx-0.5">/</span>{entry.bpDiastolic}</p>
+                        <p className="text-xl font-bold text-emerald-600 dark:text-emerald-500">{entry.bpSystolic}<span className="text-slate-300 dark:text-slate-600 mx-0.5">/</span>{entry.bpDiastolic}</p>
                       </div>
                     </div>
 
                     {/* Actions */}
-                    {isEditMode ? (
-                      <div className="flex gap-2 animate-in slide-in-from-right-4 duration-300">
+                   {isEditMode && (
+                      <div className="flex gap-2">
                         <button 
                           onClick={() => handleOpenEditModal(entry)}
-                          className="antialiased p-3 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-xl transition-all"
+                          className="p-3 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white rounded-xl transition-all"
                         >
                           <Pencil size={18} />
                         </button>
                         <button 
                           onClick={() => handleDelete(entry.id)}
-                          className="antialiased p-3 bg-rose-500/10 text-rose-400 hover:bg-rose-500/30 hover:text-white rounded-xl transition-all"
+                          className="p-3 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white rounded-xl transition-all"
                         >
                           <Trash2 size={18} />
                         </button>
                       </div>
-                    ) : (
-                      <div className="hidden md:block w-1 bg-blue-600/0 group-hover:bg-blue-600/30 h-12 rounded-full transition-all" />
                     )}
                   </div>
                 </div>

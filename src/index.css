@@ -2,6 +2,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 
+@import "tailwindcss";
+
+/* This is the critical part for v4 theme switching */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* This ensures your slate colors are mapped correctly in v4 */
+  --color-slate-950: #020617;
+  --color-slate-900: #0f172a;
+  --color-slate-800: #1e293b;
+}
 
 *{
    font-family: "Elms Sans", sans-serif;

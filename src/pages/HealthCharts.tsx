@@ -45,7 +45,7 @@ const commonElements = [
           <LineChart data={data} margin={{ left: -20, right: 10 }}>
             {commonElements}
     
-              <CartesianGrid key="grid" vertical={false} stroke="#e2e8f0" strokeDasharray="3 3" />,
+              <CartesianGrid key="grid" vertical={false} stroke="#94a3b8" strokeDasharray="3 3" />,
             
             <Line 
               type="linear" 
