@@ -130,7 +130,7 @@ const COLORS = { weight: '#10b981', sugar: '#f87171', bp: '#3b82f6' };
   if (val < 18.5) {
     return { label: 'Underweight', color: 'text-amber-500/50' };
   } else if (val >= 18.5 && val <= 24.9) {
-    return { label: 'Healthy Weight', color: 'text-emerald-500/50' };
+    return { label: 'Healthy', color: 'text-emerald-500/50' };
   } else if (val >= 25 && val <= 29.9) {
     return { label: 'Overweight', color: 'text-orange-500/50' };
   } else {
