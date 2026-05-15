@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import CustomCalendar from './CustomCalendar';
 import { Pencil, Trash2 ,Scale, Droplets, Activity, Calendar as CalendarIcon, Plus} from 'lucide-react'; // Make sure to install lucide-react
 import styles from './ActivityLog.module.css';
-import MonthlyTrends from './MothlyTrends';
+
 
 interface HealthEntry {
   id: number;
