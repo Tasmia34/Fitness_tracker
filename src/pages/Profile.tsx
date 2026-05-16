@@ -9,7 +9,7 @@ const Profile = () => {
   const firstName = displayName.trim().split(' ')[0];
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const sky = "#38BDF8";
+  const sky = "#60A5FA";
 const inputStyle = `w-full p-3 rounded-xl border outline-none transition-all duration-200 ${
     isEditing 
     ? "bg-white dark:bg-slate-900 border-[${sky}] text-slate-900 dark:text-white focus:ring-2 focus:ring-[${sky}]/20 shadow-[0_0_10px_rgba(0,85,255,0.1)]"
@@ -90,7 +90,7 @@ const handleSave = () => {
         <div className="mb-8 text-center md:text-left">
 <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">User Health Profile</h1>    
     <p className="mt-2 flex items-baseline gap-2 justify-center md:justify-start">
-    <span className="text-2xl font-bold text-[#38BDF8] dark:text-[#38BDF8]">
+    <span className="text-2xl font-bold text-[#60A5FA] dark:text-[#60A5FA]">
       Hey {firstName},
     </span>
     
@@ -127,7 +127,7 @@ const handleSave = () => {
                 />
                <button 
   onClick={() => fileInputRef.current?.click()}
-className="text-[#38BDF8] font-bold flex items-center gap-2 hover:brightness-110 transition-all mx-auto md:mx-0 text-sm tracking-wide uppercase">
+className="text-[#60A5FA] font-bold flex items-center gap-2 hover:brightness-110 transition-all mx-auto md:mx-0 text-sm tracking-wide uppercase">
   <Upload size={18} className="group-hover:scale-110 transition-transform" /> 
   <span>Upload Photo</span>
 </button>
@@ -226,7 +226,7 @@ className="text-[#38BDF8] font-bold flex items-center gap-2 hover:brightness-110
             onClick={handleAction} //didnt edited
             className={`px-14 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 shadow-lg ${
               isEditing 
-              ? "bg-[#38BDF8] text-white shadow-[#38BDF8]/30" 
+              ? "bg-[#60A5FA] text-white shadow-[#60A5FA]/30" 
           : "bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-white"
             }`}
           >
