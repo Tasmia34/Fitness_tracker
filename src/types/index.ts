@@ -10,6 +10,9 @@ export type User = {
     age?: number;        
     height?: number; 
     gender?: string;
+  avgCycleLength?: number;
+  lastPeriodStart?: string; // Current ongoing cycle start
+  cycleHistory?: HistoricalCycle[]; // 🌟 Added for charting historical cycles
     bloodGroup?: string;
     profileImage?: string ;    
     documentId?: string;
@@ -63,3 +66,10 @@ export const initialState: AppContextType = {
     allActivityLogs: [],
     setAllActivityLogs: () => {},
 };
+
+export interface HistoricalCycle {
+  id: string;
+  startDate: string; // "YYYY-MM-DD"
+  endDate: string;   // "YYYY-MM-DD"
+  durationInDays: number;
+}

@@ -9,10 +9,10 @@ const Profile = () => {
   const firstName = displayName.trim().split(' ')[0];
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const sky = "#60A5FA";
+  
 const inputStyle = `w-full p-3 rounded-xl border outline-none transition-all duration-200 ${
     isEditing 
-    ? "bg-white dark:bg-slate-900 border-[${sky}] text-slate-900 dark:text-white focus:ring-2 focus:ring-[${sky}]/20 shadow-[0_0_10px_rgba(0,85,255,0.1)]"
+    ? "bg-white dark:bg-slate-900 border-[#60A5FA] text-slate-900 dark:text-white focus:ring-2 focus:ring-[${sky}]/20 shadow-[0_0_10px_rgba(0,85,255,0.1)]"
     : "bg-slate-50 dark:bg-slate-900/30 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 cursor-not-allowed"
   }`;
 
@@ -88,8 +88,8 @@ const handleSave = () => {
       <div className="max-w-4xl mx-auto">
         
         <div className="mb-8 text-center md:text-left">
-<h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">User Health Profile</h1>    
-    <p className="mt-2 flex items-baseline gap-2 justify-center md:justify-start">
+<h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">User Health Profile</h1>    
+    <p className="flex items-baseline justify-center gap-2 mt-2 md:justify-start">
     <span className="text-2xl font-bold text-[#60A5FA] dark:text-[#60A5FA]">
       Hey {firstName},
     </span>
@@ -104,20 +104,20 @@ const handleSave = () => {
 
 <div className="bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden transition-colors duration-300">    
         <div className="p-10 rounded-2xl">
-<h2 className="text-xl font-bold text-slate-800 dark:text-white mb-10">Personal Information</h2>
+<h2 className="mb-10 text-xl font-bold text-slate-800 dark:text-white">Personal Information</h2>
            
             {/* Profile Photo Section */}
 
-            <div className="flex flex-col md:flex-row items-center gap-7 mb-12">
+            <div className="flex flex-col items-center mb-12 md:flex-row gap-7">
 <div className="w-24 h-24 bg-slate-100 dark:bg-[#1f2937] rounded-full flex items-center justify-center border-2 border-slate-200 dark:border-slate-700 shadow-inner overflow-hidden relative group">           
        {formData.profileImage ? (
-                  <img src={formData.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                  <img src={formData.profileImage} alt="Profile" className="object-cover w-full h-full" />
                 ) : (
                   <UserIcon size={46} className="text-slate-400 dark:text-slate-500" />
                 )}
               </div>
               
-              <div className="text-center md:text-left space-y-2">
+              <div className="space-y-2 text-center md:text-left">
                 <input 
                   type="file" 
                   ref={fileInputRef}
@@ -128,10 +128,10 @@ const handleSave = () => {
                <button 
   onClick={() => fileInputRef.current?.click()}
 className="text-[#60A5FA] font-bold flex items-center gap-2 hover:brightness-110 transition-all mx-auto md:mx-0 text-sm tracking-wide uppercase">
-  <Upload size={18} className="group-hover:scale-110 transition-transform" /> 
+  <Upload size={18} className="transition-transform group-hover:scale-110" /> 
   <span>Upload Photo</span>
 </button>
-                <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 max-w-xs">
+                <p className="max-w-xs mt-2 text-xs text-slate-400 dark:text-slate-500">
                   Upload profile image, it's best if it has the same length and height.
                 </p>
               </div>
@@ -142,7 +142,7 @@ className="text-[#60A5FA] font-bold flex items-center gap-2 hover:brightness-110
              
             {/* Email Field */}
           <div className="flex flex-col gap-3">
-            <label className="text-slate-900 dark:text-white text-sm font-bold  tracking-wide ml-1">Email Address</label>
+            <label className="ml-1 text-sm font-bold tracking-wide text-slate-900 dark:text-white">Email Address</label>
             <input 
               type="email" 
             value={formData.email}          
@@ -155,7 +155,7 @@ className="text-[#60A5FA] font-bold flex items-center gap-2 hover:brightness-110
 
              {/* Age Field */}
           <div className="flex flex-col gap-3">
-            <label className="text-slate-900 dark:text-white text-sm font-bold  tracking-wide ml-1">Age</label>
+            <label className="ml-1 text-sm font-bold tracking-wide text-slate-900 dark:text-white">Age</label>
             <input 
               type="number" 
                 value={formData.age}    
@@ -170,7 +170,7 @@ className="text-[#60A5FA] font-bold flex items-center gap-2 hover:brightness-110
 
              {/* Height Field */}
           <div className="flex flex-col gap-3">
-            <label className="text-slate-900 dark:text-white text-sm font-bold  tracking-wide ml-1">Height (cm)</label>
+            <label className="ml-1 text-sm font-bold tracking-wide text-slate-900 dark:text-white">Height (cm)</label>
             <input 
               type="number" 
                 value={formData.height} 
@@ -183,24 +183,24 @@ className="text-[#60A5FA] font-bold flex items-center gap-2 hover:brightness-110
 
 {/* Gender Section */}
   <div className="flex flex-col gap-3">
-        <label className="text-slate-900 dark:text-white text-sm font-bold  tracking-wide ml-1">Gender</label>
-        <select 
-          value={formData.gender || ""}
-          onChange={(e) => setFormData({...formData, gender: e.target.value})}
-          disabled={!isEditing}
-           className={inputStyle}
-
-        >
-          <option>{user?.gender || "Select Gender"}</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
+        <label className="ml-1 text-sm font-bold tracking-wide text-slate-900 dark:text-white">Gender</label>
+          <select 
+  name="gender"
+  value={formData.gender}
+  onChange={(e) => setFormData({...formData, gender: e.target.value})}
+  disabled={!isEditing}
+  className={inputStyle}
+>
+  <option value="">Select Gender</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</select>
       </div>
 
   {/* Blood Group Selection */}
           <div className="flex flex-col gap-3">
-            <label className="text-slate-900 dark:text-white text-sm font-bold  tracking-wide ml-1">Blood Group</label>
+            <label className="ml-1 text-sm font-bold tracking-wide text-slate-900 dark:text-white">Blood Group</label>
             <select 
               disabled={!isEditing}
               className={inputStyle}
@@ -221,7 +221,7 @@ className="text-[#60A5FA] font-bold flex items-center gap-2 hover:brightness-110
 
        </div>
 
-          <div className="mt-14 flex justify-end">
+          <div className="flex justify-end mt-14">
           <button 
             onClick={handleAction} //didnt edited
             className={`px-14 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 shadow-lg ${

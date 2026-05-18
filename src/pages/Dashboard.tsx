@@ -6,8 +6,9 @@ import { useAppContext } from "../context/Appcontext";
 import MonthlyTrends from "./MothlyTrends";
 import { MetricCards } from "./MetricCards";
 
-import { MOCK_USER_DATA } from '../utils/mockData';
+// import { MOCK_USER_DATA } from '../utils/mockData';
 import CycleTrackerCard from "./CycleTrackerCard";
+import CycleHistoryChart from "./CycleHistoryChart";
 
 
 interface HealthEntry {
@@ -21,7 +22,6 @@ interface HealthEntry {
 }
 
 const Dashboard = () => {
-  const { user } = useAppContext();
   const { user } = useAppContext();
   const [lastEntry, setLastEntry] = useState<HealthEntry | null>(null);
   const [calculatedBmi, setCalculatedBmi] = useState<string>("--.-");
@@ -80,58 +80,6 @@ const Dashboard = () => {
     }
   }, [selectedDate, userHeightCm]); // Added selectedDate as a dependency
 
-  // const [selectedMonth] = useState(new Date().getMonth());
-  // const [activeMetric, setActiveMetric] = useState<"weight" | "sugar" | "bp">(
-  //   "weight",
-  // );
-  // const trendData = useMemo(() => {
-  //   const currentYear = new Date().getFullYear();
-
-  //   const data = entries
-  //     .filter((e) => {
-  //       // Split the saved string (M/D/YYYY) to ensure accurate parsing
-  //       const parts = e.date.split("/");
-  //       if (parts.length !== 3) return false;
-
-  //       // Note: This logic assumes your locale is M/D/YYYY.
-  //       // If your locale is D/M/YYYY, swap parts[0] and parts[1]
-  //       const month = parseInt(parts[0]) - 1;
-  //       const year = parseInt(parts[2]);
-
-  //       return month === selectedMonth && year === currentYear;
-  //     })
-  //     .sort((a, b) => {
-  //       const d1 = a.date.split("/");
-  //       const d2 = b.date.split("/");
-  //       return (
-  //         new Date(
-  //           parseInt(d1[2]),
-  //           parseInt(d1[0]) - 1,
-  //           parseInt(d1[1]),
-  //         ).getTime() -
-  //         new Date(
-  //           parseInt(d2[2]),
-  //           parseInt(d2[0]) - 1,
-  //           parseInt(d2[1]),
-  //         ).getTime()
-  //       );
-  //     })
-  //     .map((e) => {
-  //       const day = parseInt(e.date.split("/")[1]);
-  //       return {
-  //         day: day,
-  //         weight: parseFloat(e.weight) || 0,
-  //         sugar: parseFloat(e.sugar) || 0,
-  //         systolic: parseFloat(e.bpSystolic) || 0,
-  //         diastolic: parseFloat(e.bpDiastolic) || 0,
-  //       };
-  //     });
-
-  //   console.log("Chart Data for Month", selectedMonth, ":", data);
-  //   return data;
-  // }, [entries, selectedMonth]);
-
-  
 
   const getBmiStatus = (bmi: string) => {
     const val = parseFloat(bmi);
@@ -161,43 +109,41 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen p-6 transition-colors duration-300 bg-slate-50 dark:bg-slate-950">
       <div className="flex flex-col max-w-6xl gap-12 mx-auto md:flex-row">
-        {/* LEFT SIDE */}
-        <div className="flex-1">
-          <h1 className="mb-8 text-2xl font-bold dark:text-white">
-            Health Overview
-          </h1>
+    {/* LEFT SIDE VIEW PANEL CONTAINER */}
+<div className="flex-1">
+  <h1 className="mb-8 text-2xl font-bold dark:text-white">
+    Health Overview
+  </h1>
 
-          <MetricCards
-            lastEntry={lastEntry}
-            calculatedBmi={calculatedBmi}
-            status={status}
-            userHeightCm={userHeightCm}
-            selectedDate={selectedDate}
-          />
-          <div>
-            
-          </div>
+  <MetricCards
+    lastEntry={lastEntry}
+    calculatedBmi={calculatedBmi}
+    status={status}
+    userHeightCm={userHeightCm}
+    selectedDate={selectedDate}
+  />
+  
+  <div className="p-6 mt-6 bg-white border shadow-sm dark:bg-slate-900 rounded-3xl border-slate-100 dark:border-slate-800">
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="font-semibold dark:text-slate-200">
+        Weekly Health Report
+      </h3>
+      <button 
+        onClick={() => setViewType(viewType === "bar" ? "line" : "bar")}
+        className="px-3 py-2 mr-5 text-xs font-semibold border-none outline-none bg-slate-200/50 dark:bg-slate-800 dark:text-slate-300 text-slate-600 rounded-xl"
+      >
+         {viewType === "bar" ? "Line" : "Bar"} View
+      </button>
+    </div>
+    <HealthReportChart data={chartData} chartType={viewType} />
+  </div>
 
-          <div className="p-6 mt-6 bg-white border shadow-sm dark:bg-slate-900 rounded-3xl border-slate-100 dark:border-slate-800">
-            {/* Weekly Chart UI */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold dark:text-slate-200">
-                Weekly Health Report
-              </h3>
-              <button 
-                onClick={() => setViewType(viewType === "bar" ? "line" : "bar")}
-                className="px-3 py-2 mr-5 text-xs font-semibold border-none outline-none bg-slate-200/50 dark:bg-slate-800 dark:text-slate-300 text-slate-600 rounded-xl"
-              >
-                 {viewType === "bar" ? "Line" : "Bar"} View
-              </button>
-              
-            </div>
-            <HealthReportChart data={chartData} chartType={viewType} />
-          </div>
+  {/* Monthly Parameter Trends */}
+  <MonthlyTrends entries={entries} />
 
-          {/* Inside Dashboard.tsx */}
-          <MonthlyTrends entries={entries} />
-        </div>
+  {/* 🌟 NEW PLACEMENT: Historical Cycle Duration Analytics Bar Chart */}
+  <CycleHistoryChart />
+</div>
 
         {/* --- RIGHT SIDE: CALENDAR --- */}
         <div className="w-full md:w-87.5">
@@ -240,7 +186,8 @@ const Dashboard = () => {
             </div>
             <div className="mt-4">
                 {/* 🚀 Place the new component here */}
-        <CycleTrackerCard data={MOCK_USER_DATA} />
+        {/* <CycleTrackerCard data={MOCK_USER_DATA} /> */}
+        <CycleTrackerCard />
               </div>
           </div>
           

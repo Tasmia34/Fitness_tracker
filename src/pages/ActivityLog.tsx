@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import CustomCalendar from './CustomCalendar';
 import { Pencil, Trash2 ,Scale, Droplets, Activity, Calendar as CalendarIcon, Plus} from 'lucide-react'; // Make sure to install lucide-react
+import { useAppContext } from '../context/Appcontext';
 // import styles from './ActivityLog.module.css';
 
 
@@ -105,22 +106,7 @@ const calculatedBmi = currentWeight > 0 ? (currentWeight / (heightInMeters * hei
     setEditingEntry(null);
   };
 
-//   const trendData = entries
-//   .filter(e => {
-//     const d = new Date(e.date);
-//     // Ensure we match the selected month and the current year
-//     return d.getMonth() === selectedMonth && d.getFullYear() === new Date().getFullYear();
-//   })
-//   .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-//   .map(e => ({
-//     day: new Date(e.date).getDate(),
-//     weight: parseFloat(e.weight),
-//     sugar: parseFloat(e.sugar),
-//     systolic: parseFloat(e.bpSystolic),
-//     diastolic: parseFloat(e.bpDiastolic),
-//   }));
 
-// const COLORS = { weight: '#10b981', sugar: '#f87171', bp: '#3b82f6' };
 
   // This filters your logs to only show entries matching the calendar date
 const filteredEntries = entries.filter(entry => 

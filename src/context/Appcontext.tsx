@@ -24,7 +24,12 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 // ২. প্রোভাইডার কম্পোনেন্ট
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate();
-    const [user, setUser] = useState<User>(null);
+    // const [user, setUser] = useState<User>(null);
+// 🟢 FIX: Read directly from localStorage during creation to avoid the blank null state on refresh
+const [user, setUser] = useState<User>(() => {
+    const savedUser = localStorage.getItem('user_data');
+    return savedUser ? JSON.parse(savedUser) : null;
+});
     const [isUserFetched, setIsUserFetched] = useState(() => localStorage.getItem('token') ? false : true);
     const [onboardingCompleted, setOnboardingCompleted] = useState(false);
     const [allActivityLogs, setAllActivityLogs] = useState<ActivityEntry[]>([]);
