@@ -158,11 +158,11 @@ const Dashboard = () => {
   const status = getBmiStatus(calculatedBmi);
 
   return (
-    <div className="p-6 min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12">
+    <div className="min-h-screen p-6 transition-colors duration-300 bg-slate-50 dark:bg-slate-950">
+      <div className="flex flex-col max-w-6xl gap-12 mx-auto md:flex-row">
         {/* LEFT SIDE */}
         <div className="flex-1">
-          <h1 className="text-2xl font-bold dark:text-white mb-8">
+          <h1 className="mb-8 text-2xl font-bold dark:text-white">
             Health Overview
           </h1>
 
@@ -177,15 +177,15 @@ const Dashboard = () => {
             
           </div>
 
-          <div className="mt-6 bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="p-6 mt-6 bg-white border shadow-sm dark:bg-slate-900 rounded-3xl border-slate-100 dark:border-slate-800">
             {/* Weekly Chart UI */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold dark:text-slate-200">
                 Weekly Health Report
               </h3>
               <button 
                 onClick={() => setViewType(viewType === "bar" ? "line" : "bar")}
-                className="bg-slate-200/50 dark:bg-slate-800 dark:text-slate-300 text-slate-600 text-xs rounded-xl font-semibold px-3 py-2 border-none outline-none mr-5"
+                className="px-3 py-2 mr-5 text-xs font-semibold border-none outline-none bg-slate-200/50 dark:bg-slate-800 dark:text-slate-300 text-slate-600 rounded-xl"
               >
                  {viewType === "bar" ? "Line" : "Bar"} View
               </button>
@@ -201,10 +201,10 @@ const Dashboard = () => {
         {/* --- RIGHT SIDE: CALENDAR --- */}
         <div className="w-full md:w-87.5">
           <div className="sticky top-6">
-            <h2 className="text-lg font-semibold mb-4 dark:text-white">
+            <h2 className="mb-4 text-lg font-semibold dark:text-white">
               Calendar
             </h2>
-            <div className="bg-white dark:bg-slate-900 p-2 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800">
+            <div className="p-2 bg-white border shadow-sm dark:bg-slate-900 rounded-3xl border-slate-100 dark:border-slate-800">
               <CustomCalendar
                 value={selectedDate}
                 onChange={setSelectedDate}

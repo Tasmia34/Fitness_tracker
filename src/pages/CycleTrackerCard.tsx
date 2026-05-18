@@ -63,7 +63,7 @@ const CycleTrackerCard = () => {
             />
             <circle
               cx="96" cy="96" r="80"
-              className="stroke-rose-500/50 fill-none transition-all duration-1000 ease-out"
+              className="transition-all duration-1000 ease-out stroke-rose-500/50 fill-none"
               strokeWidth="12"
               strokeLinecap="round"
               strokeDasharray={502.4} 
@@ -73,7 +73,7 @@ const CycleTrackerCard = () => {
 
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <p className="text-slate-400 text-[10px] font-medium uppercase tracking-wider">Next period in</p>
-            <h2 className="text-3xl font-black text-slate-800 dark:text-white my-1">
+            <h2 className="my-1 text-3xl font-black text-slate-800 dark:text-white">
               {daysRemaining > 0 ? daysRemaining : 0} Days
             </h2>
             <p className="text-rose-400 text-[10px] font-bold mb-2">Day {currentDay} of {avgCycleLength}</p>
@@ -88,7 +88,7 @@ const CycleTrackerCard = () => {
           </div>
         </div>
 
-        <div className="mt-8 flex gap-2">
+        <div className="flex gap-2 mt-8">
           {['M','T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
             <div key={i} className={`w-8 h-12 rounded-full border flex flex-col items-center justify-center gap-1 ${i === 4 ? 'bg-slate-800 text-white border-slate-800 dark:bg-slate-200 dark:text-black' : 'bg-white dark:bg-slate-800 border-rose-50 dark:border-slate-700 text-rose-300'}`}>
               <span className="text-[10px] font-bold">{day}</span>
