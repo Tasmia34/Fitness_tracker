@@ -22,6 +22,7 @@ interface HealthEntry {
 
 const Dashboard = () => {
   const { user } = useAppContext();
+  const { user } = useAppContext();
   const [lastEntry, setLastEntry] = useState<HealthEntry | null>(null);
   const [calculatedBmi, setCalculatedBmi] = useState<string>("--.-");
   const [selectedDate, setSelectedDate] = useState(new Date());

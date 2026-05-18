@@ -18,27 +18,40 @@
    font-family: "Elms Sans", sans-serif;
 }
 
-/* login page*/
+/* login page */
 .login-page-container {
-   @apply flex items-center justify-center h-screen w-full px-4
-   bg-white dark:bg-slate-950 transition-colors duration-200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    padding-left: 1rem; /* px-4 এর বদলে সরাসরি CSS */
+    padding-right: 1rem;
+    transition-property: color, background-color, border-color;
+    transition-duration: 200ms;
+}
 
+/* Dark mode logic for the container */
+@media (prefers-color-scheme: dark) {
+  .login-page-container {
+    background-color: #020617; /* slate-950 */
+  }
 }
 
 .login-form {
-@apply flex w-full flex-col max-w-80;
-
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 24rem; /* max-w-sm */
 }
 
-
-/* Hide number input arrows (spinners) for Chrome, Safari, Edge, and Opera */
+/* Hide number input arrows */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Hide number input arrows for Firefox */
 input[type=number] {
   -moz-appearance: textfield;
 }

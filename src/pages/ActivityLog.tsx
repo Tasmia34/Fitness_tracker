@@ -15,6 +15,7 @@ interface HealthEntry {
 }
 
 const ActivityLog = () => {
+   const { user } = useAppContext();
   const [entries, setEntries] = useState<HealthEntry[]>(() => {
     const savedEntries = localStorage.getItem('health_logs');
     return savedEntries ? JSON.parse(savedEntries) : [];
@@ -83,7 +84,11 @@ const ActivityLog = () => {
         bpDiastolic
       } : e));
     } else {
+
       // CREATE logic
+      const heightInMeters = (user?.height || 160) / 100;
+const currentWeight = parseFloat(weight);
+const calculatedBmi = currentWeight > 0 ? (currentWeight / (heightInMeters * heightInMeters)).toFixed(1) : "";
       const newEntry: HealthEntry = {
         id: Date.now(),
         date: dateToSave,
@@ -126,17 +131,17 @@ const filteredEntries = entries.filter(entry =>
 const hasEntryForSelectedDate = filteredEntries.length > 0;
 
   return (
-   <div className="p-6 min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-300 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+   <div className="min-h-screen p-6 transition-colors duration-300 bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-300">
+      <div className="flex flex-col gap-8 mx-auto max-w-7xl lg:flex-row">
         
         {/* --- MAIN CONTENT AREA --- */}
       {/* --- MAIN CONTENT AREA --- */}
         <div className="flex-1 space-y-8">
-          <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               {/* 2. Heading - Adaptive */}
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Activity Log</h1>
-              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Track your vital signs and health progression</p>
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Activity Log</h1>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Track your vital signs and health progression</p>
             </div>
             
             <div className="flex items-center gap-3">
@@ -166,17 +171,17 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
   */}
  {!hasEntryForSelectedDate ? (
               /* 3. Empty State Card - Adaptive */
-              <div className="py-8 bg-white dark:bg-slate-900/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800 text-center">
-                <div className="p-4 bg-amber-500/10 w-fit mx-auto rounded-full mb-4">
+              <div className="py-8 text-center bg-white border-2 border-dashed dark:bg-slate-900/50 rounded-3xl border-slate-200 dark:border-slate-800">
+                <div className="p-4 mx-auto mb-4 rounded-full bg-amber-500/10 w-fit">
                   <CalendarIcon size={32} className="text-amber-500" />
                 </div>
-                <p className="text-slate-900 dark:text-white font-bold text-lg">No entry found</p>
-                <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">
+                <p className="text-lg font-bold text-slate-900 dark:text-white">No entry found</p>
+                <p className="mt-1 font-medium text-slate-500 dark:text-slate-400">
                   There are no records for {selectedDate.toLocaleDateString()}
                 </p>
                 <button 
                   onClick={handleOpenAddModal}
-                  className="mt-6 text-blue-600 dark:text-blue-400 hover:underline font-bold text-sm flex items-center gap-2 mx-auto transition-all"
+                  className="flex items-center gap-2 mx-auto mt-6 text-sm font-bold text-blue-600 transition-all dark:text-blue-400 hover:underline"
                 >
                   <Plus size={16} /> Create log for this date
                 </button>
@@ -189,12 +194,12 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                 /* 4. Log Row - Adaptive */
                 <div 
                   key={entry.id} 
-                  className="group relative bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-900 p-1 rounded-2xl border transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="relative p-1 transition-all duration-300 bg-white border shadow-sm group dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-900 rounded-2xl hover:shadow-md"
                 >
-                  <div className="flex flex-col md:flex-row md:items-center gap-6 p-5">
+                  <div className="flex flex-col gap-6 p-5 md:flex-row md:items-center">
                     
                     <div className="flex items-center gap-4 min-w-35">
-                      <div className="p-3 bg-blue-500/10 rounded-xl text-blue-600 dark:text-blue-400">
+                      <div className="p-3 text-blue-600 bg-blue-500/10 rounded-xl dark:text-blue-400">
                         <CalendarIcon size={20} />
                       </div>
                       <div>
@@ -204,13 +209,13 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                     </div>
 
           {/* Stats Grid filtered ones */}
-          <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 border-l border-slate-800/50 pl-0 md:pl-8">
+          <div className="grid flex-1 grid-cols-3 gap-4 pl-0 border-l md:gap-8 border-slate-800/50 md:pl-8">
             <div className="space-y-1">
               <div className="flex items-center gap-1.5 text-slate-500">
                 <Scale size={14} />
                 <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Weight</span>
               </div>
-              <p className="antialiased text-xl font-bold text-black dark:text-white">{entry.weight}<span className="text-xs text-slate-500 ml-1">kg</span></p>
+              <p className="text-xl antialiased font-bold text-black dark:text-white">{entry.weight}<span className="ml-1 text-xs text-slate-500">kg</span></p>
             </div>
 
             <div className="space-y-1">
@@ -226,28 +231,28 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                 <Activity size={14} />
                 <span className="antialiased text-[10px] uppercase font-bold tracking-wider">Blood Pressure</span>
               </div>
-              <p className="antialiased text-xl font-bold text-emerald-500">{entry.bpSystolic}<span className="text-slate-600 mx-0.5">/</span>{entry.bpDiastolic}</p>
+              <p className="text-xl antialiased font-bold text-emerald-500">{entry.bpSystolic}<span className="text-slate-600 mx-0.5">/</span>{entry.bpDiastolic}</p>
             </div>
           </div>
 
           {/* Actions */}
           {isEditMode ? (
-            <div className="flex gap-2 animate-in slide-in-from-right-4 duration-300">
+            <div className="flex gap-2 duration-300 animate-in slide-in-from-right-4">
               <button 
                 onClick={() => handleOpenEditModal(entry)}
-                className="antialiased p-3 bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white rounded-xl transition-all"
+                className="p-3 antialiased text-blue-400 transition-all bg-blue-500/10 hover:bg-blue-500 hover:text-white rounded-xl"
               >
                 <Pencil size={18} />
               </button>
               <button 
                 onClick={() => handleDelete(entry.id)}
-                className="antialiased p-3 bg-rose-500/10 text-rose-400 hover:bg-rose-500/30 hover:text-white rounded-xl transition-all"
+                className="p-3 antialiased transition-all bg-rose-500/10 text-rose-400 hover:bg-rose-500/30 hover:text-white rounded-xl"
               >
                 <Trash2 size={18} />
               </button>
             </div>
           ) : (
-            <div className="hidden md:block w-1 bg-blue-600/0 group-hover:bg-blue-600/30 h-12 rounded-full transition-all" />
+            <div className="hidden w-1 h-12 transition-all rounded-full md:block bg-blue-600/0 group-hover:bg-blue-600/30" />
           )}
         </div>
       </div>
@@ -258,21 +263,21 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
           {/* --- LOG ENTRIES --- */}
           <div className="space-y-4">
             {entries.length === 0 ? (
-              <div className="py-24 bg-white dark:bg-slate-900/50 rounded-4xl border-2 border-dashed border-slate-800 text-center">
-                <Activity size={48} className="mx-auto text-slate-700 mb-4" />
-                <p className="text-slate-500 font-medium">Your health journey starts here. Add your first log.</p>
+              <div className="py-24 text-center bg-white border-2 border-dashed dark:bg-slate-900/50 rounded-4xl border-slate-800">
+                <Activity size={48} className="mx-auto mb-4 text-slate-700" />
+                <p className="font-medium text-slate-500">Your health journey starts here. Add your first log.</p>
               </div>
             ) : (
               entries.map((entry) => (
                <div 
   key={entry.id} 
-  className="group relative bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-900 p-1 rounded-2xl border transition-all duration-300 shadow-sm hover:shadow-md overflow-hidden"
+  className="relative p-1 overflow-hidden transition-all duration-300 bg-white border shadow-sm group dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-900 rounded-2xl hover:shadow-md"
 >
-                  <div className="flex flex-col md:flex-row md:items-center gap-6 p-5">
+                  <div className="flex flex-col gap-6 p-5 md:flex-row md:items-center">
                     
                     {/* Date Column */}
                     <div className="flex items-center gap-4 min-w-35">
-                      <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
+                      <div className="p-3 text-blue-500 bg-blue-500/10 rounded-xl">
                         <CalendarIcon size={20} />
                       </div>
                       <div>
@@ -285,13 +290,13 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                     
 
                     {/* Stats Grid */}
-                   <div className="flex-1 grid grid-cols-3 gap-4 md:gap-8 border-l border-slate-100 dark:border-slate-800 pl-4 md:pl-8">
+                   <div className="grid flex-1 grid-cols-3 gap-4 pl-4 border-l md:gap-8 border-slate-100 dark:border-slate-800 md:pl-8">
                       <div className="space-y-1">
                         <div className="flex items-center gap-1.5 text-slate-400">
                           <Scale size={14} />
                           <span className="text-[10px] uppercase font-bold tracking-wider">Weight</span>
                         </div>
-                        <p className="text-xl font-bold text-slate-900 dark:text-white">{entry.weight}<span className="text-xs text-slate-400 ml-1">kg</span></p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-white">{entry.weight}<span className="ml-1 text-xs text-slate-400">kg</span></p>
                       </div>
 
                       <div className="space-y-1">
@@ -316,13 +321,13 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
                       <div className="flex gap-2">
                         <button 
                           onClick={() => handleOpenEditModal(entry)}
-                          className="p-3 bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white rounded-xl transition-all"
+                          className="p-3 text-blue-600 transition-all bg-blue-500/10 dark:text-blue-400 hover:bg-blue-600 hover:text-white rounded-xl"
                         >
                           <Pencil size={18} />
                         </button>
                         <button 
                           onClick={() => handleDelete(entry.id)}
-                          className="p-3 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white rounded-xl transition-all"
+                          className="p-3 transition-all bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white rounded-xl"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -338,8 +343,8 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
         {/* --- RIGHT SIDE: CALENDAR (Remains same) --- */}
         <div className="w-full md:w-87.5">
           <div className="sticky top-6">
-            <h2 className="text-lg font-semibold mb-4 dark:text-white">Select Date</h2>
-            <div className="bg-white dark:bg-slate-900 p-2 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800">
+            <h2 className="mb-4 text-lg font-semibold dark:text-white">Select Date</h2>
+            <div className="p-2 bg-white border shadow-sm dark:bg-slate-900 rounded-3xl border-slate-100 dark:border-slate-800">
               <CustomCalendar value={selectedDate} onChange={setSelectedDate} entries={entries} />
             </div>
 
@@ -368,20 +373,20 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
       {/* --- MODAL (Handles both Create and Update) --- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
-          <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
-            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+          <div className="w-full max-w-md overflow-hidden bg-white shadow-2xl dark:bg-slate-900 rounded-3xl">
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
               <div>
                 <h2 className="text-xl font-bold dark:text-white">
                   {editingEntry ? "Edit Health Log" : "New Health Log"}
                 </h2>
                <button 
             onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-            className="flex items-center gap-2 mt-2 group cursor-pointer"
+            className="flex items-center gap-2 mt-2 cursor-pointer group"
           >
             <div className="p-1.5 bg-blue-500/10 rounded-lg text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-all">
               <CalendarIcon size={14} />
             </div>
-            <span className="text-xs text-blue-400 font-bold uppercase tracking-wider">
+            <span className="text-xs font-bold tracking-wider text-blue-400 uppercase">
               {selectedDate.toDateString()}
             </span>
           </button>
@@ -393,7 +398,7 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
             <form onSubmit={handleSave} className="p-6 space-y-4">
         {/* INLINE CALENDAR POPPER */}
         {isDatePickerOpen && (
-          <div className="animate-in fade-in zoom-in-3 duration-400 bg-slate-900 border border-slate-800 p-4 rounded-3xl mb-4 shadow-inner">
+          <div className="p-4 mb-4 border shadow-inner animate-in fade-in zoom-in-3 duration-400 bg-slate-900 border-slate-800 rounded-3xl">
             <CustomCalendar entries={entries}
               value={selectedDate} 
               onChange={(date) => {
@@ -406,25 +411,25 @@ const hasEntryForSelectedDate = filteredEntries.length > 0;
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold mb-1 uppercase text-slate-400">Weight (kg)</label>
-                  <input type="number" step="0.1" required value={weight} onChange={(e) => setWeight(e.target.value)} className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white outline-none" />
+                  <label className="block mb-1 text-xs font-bold uppercase text-slate-400">Weight (kg)</label>
+                  <input type="number" step="0.1" required value={weight} onChange={(e) => setWeight(e.target.value)} className="w-full p-3 outline-none rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold mb-1 uppercase text-slate-400">Sugar Level</label>
-                  <input type="number" required value={sugar} onChange={(e) => setSugar(e.target.value)} className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white outline-none" />
+                  <label className="block mb-1 text-xs font-bold uppercase text-slate-400">Sugar Level</label>
+                  <input type="number" required value={sugar} onChange={(e) => setSugar(e.target.value)} className="w-full p-3 outline-none rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 uppercase text-slate-400">Blood Pressure (Sys/Dia)</label>
+                <label className="block mb-1 text-xs font-bold uppercase text-slate-400">Blood Pressure (Sys/Dia)</label>
                 <div className="flex items-center gap-2">
-                  <input type="number" placeholder="120" required value={bpSystolic} onChange={(e) => setBpSystolic(e.target.value)} className="w-1/2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white outline-none" />
-                  <span className="text-slate-400 text-xl">/</span>
-                  <input type="number" placeholder="80" required value={bpDiastolic} onChange={(e) => setBpDiastolic(e.target.value)} className="w-1/2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white outline-none" />
+                  <input type="number" placeholder="120" required value={bpSystolic} onChange={(e) => setBpSystolic(e.target.value)} className="w-1/2 p-3 outline-none rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white" />
+                  <span className="text-xl text-slate-400">/</span>
+                  <input type="number" placeholder="80" required value={bpDiastolic} onChange={(e) => setBpDiastolic(e.target.value)} className="w-1/2 p-3 outline-none rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white" />
                 </div>
               </div>
 
-              <button type="submit" className="w-full bg-blue-800 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg mt-2">
+              <button type="submit" className="w-full py-4 mt-2 font-bold text-white transition-all bg-blue-800 shadow-lg rounded-2xl hover:bg-blue-700">
                 {editingEntry ? "Update Changes" : "Save Entry"}
               </button>
             </form>

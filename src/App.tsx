@@ -8,6 +8,8 @@ import AiAssistant from "./pages/AiAssistant"
 import Onboarding from "./pages/Onboarding"
 import Layout from "./pages/Layout"
 import { useAppContext } from "./context/Appcontext"
+import Home from "./pages/Home" 
+
 
 const App = () => {
   const { user, isUserFetched , onboardingCompleted} = useAppContext()
@@ -24,14 +26,14 @@ const App = () => {
       <Route path='/' element={user ? <Layout /> : <Navigate to="/login" />}>
         
         {/* যদি অনবোর্ডিং শেষ না হয়, তবে সবসময় অনবোর্ডিং পেজে পাঠাবে */}
-       <Route index element={
-      <div className="p-8">
-        <h1 className="text-3xl font-bold text-white">Welcome to Health Monitor</h1>
-        <p className="text-slate-400 mt-4">This is my new, independent homepage. Ready to  design it however i  like!</p>
-      </div>
-    } />
+
+
+
+        <Route index element={<Home />}/>
+      
         
-        <Route path="dashboard" element={<Dashboard />} />        <Route path='activityLog' element={<ActivityLog />} />
+        <Route path="dashboard" element={<Dashboard />} />      
+        <Route path='activityLog' element={<ActivityLog />} />
 	      <Route path='aiPlanner' element={<AiAssistant />} />
         <Route path='profile' element={<Profile />} /> 
         <Route path='onboarding' element={<Onboarding />} />
