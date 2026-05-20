@@ -1,6 +1,6 @@
 import { useAppContext } from "../context/Appcontext";
 import { NavLink } from "react-router-dom";
-import { ActivityIcon, HomeIcon, UserIcon , Moon, Sun , LogOut, LockIcon} from "lucide-react";
+import { ActivityIcon, HomeIcon, UserIcon , Moon, Sun , LogOut} from "lucide-react";
 import {  LayoutDashboard, Bot } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
@@ -15,12 +15,12 @@ const Sidebar = () => {
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/activityLog', label: 'Activity', icon: ActivityIcon }, 
     { path: '/aiPlanner', label: 'AI Assistant', icon: Bot },
-        { path: '/login', label: 'Login/Signup', icon: LockIcon },
+        // { path: '/login', label: 'Login/Signup', icon: LockIcon },
 
   ];
 
   return (
-    <nav className="flex flex-col w-20 sm:w-64 h-screen bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 p-4 sm:p-6 transition-colors duration-200 sticky top-0">
+    <nav className="sticky top-0 flex flex-col w-20 h-screen p-4 transition-colors duration-200 bg-white border-r sm:w-64 dark:bg-slate-900 border-slate-100 dark:border-slate-800 sm:p-6">
       <div className="flex items-center gap-3 mb-8">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Health Monitor</h1>
       </div>
@@ -46,14 +46,14 @@ const Sidebar = () => {
 
       {/* Theme Toggle Button */}
 
-      <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+      <div className="pt-4 mt-auto space-y-2 border-slate-100 dark:border-slate-800">
       {/* Theme Change Button */}
 
 
-      <div className="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+      <div className="pt-4 mt-auto space-y-2 border-t border-slate-100 dark:border-slate-800">
       <button
         onClick={toggleTheme}
-        className="mt-auto flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-all"
+        className="flex items-center gap-3 px-4 py-3 mt-auto transition-all rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
       >
         {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         <span className="font-medium">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
@@ -61,7 +61,7 @@ const Sidebar = () => {
 
         <button 
           onClick={logout}
-          className="flex items-center gap-3 px-4 py-3 w-full text-blue-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+          className="flex items-center w-full gap-3 px-4 py-3 text-blue-500 transition-all rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
         >
           <LogOut size={20} />
           <span className="font-medium">Logout</span>

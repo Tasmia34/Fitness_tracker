@@ -1,15 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import CustomCalendar from "./CustomCalendar";
-
 import { HealthReportChart } from "./HealthCharts";
 import { useAppContext } from "../context/Appcontext";
 import MonthlyTrends from "./MothlyTrends";
 import { MetricCards } from "./MetricCards";
-
-// import { MOCK_USER_DATA } from '../utils/mockData';
 import CycleTrackerCard from "./CycleTrackerCard";
 import CycleHistoryChart from "./CycleHistoryChart";
-
+import { ChevronLeft, ChevronRight } from "lucide-react"; // Make sure to have lucide-react or change to basic strings
 
 interface HealthEntry {
   id: number;
@@ -18,7 +15,7 @@ interface HealthEntry {
   sugar: string;
   bpSystolic: string;
   bpDiastolic: string;
-  bmi: string; // This is the old string from the log, we will calculate a fresh one
+  bmi: string;
 }
 
 const Dashboard = () => {
@@ -27,46 +24,24 @@ const Dashboard = () => {
   const [calculatedBmi, setCalculatedBmi] = useState<string>("--.-");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewType, setViewType] = useState<"bar" | "line">("bar");
-  const [chartData, setChartData] = useState<any[]>([]);
-
-  // for calendar
   const [entries, setEntries] = useState<HealthEntry[]>([]);
+  
+  // Track which week of the month we are looking at (0 to 4)
+  const [currentWeekIndex, setCurrentWeekIndex] = useState<number>(0);
 
   const userHeightCm = user?.height || 164;
 
+  // Sync state with local storage logs
   useEffect(() => {
     const savedEntries = localStorage.getItem("health_logs");
     if (savedEntries) {
       const parsed: HealthEntry[] = JSON.parse(savedEntries);
-
-      // Set the full list so the calendar can see which days have dots
       setEntries(parsed);
-      // 1. Format the calendar's selectedDate to match your log format (e.g., "M/D/YYYY")
+
       const formattedSelectedDate = selectedDate.toLocaleDateString();
-
-      // 2. Find the entry for the selected date
-      const dayEntry = parsed.find(
-        (entry) => entry.date === formattedSelectedDate,
-      );
-
-      // 3. Update the "Last Entry" state (which the cards use) to the found entry
-      // If no entry exists for that day, we set it to null so the UI shows "--"
+      const dayEntry = parsed.find((entry) => entry.date === formattedSelectedDate);
       setLastEntry(dayEntry || null);
 
-      // 4. Prepare Chart Data (We keep this showing the last 7 entries for context)
-      const formattedChart = parsed
-        .slice(0, 7)
-        .map((entry) => ({
-          date: entry.date.split("/")[0] + "/" + entry.date.split("/")[1],
-          weight: parseFloat(entry.weight),
-          sugar: parseFloat(entry.sugar),
-          systolic: parseFloat(entry.bpSystolic),
-        }))
-        .reverse();
-
-      setChartData(formattedChart);
-
-      // 5. Update BMI based on the selected day's entry (if it exists)
       if (dayEntry) {
         const weight = parseFloat(dayEntry.weight);
         if (weight > 0 && userHeightCm > 0) {
@@ -75,82 +50,142 @@ const Dashboard = () => {
           setCalculatedBmi(bmiValue.toFixed(1));
         }
       } else {
-        setCalculatedBmi("--.-"); // Reset if no data for selected day
+        setCalculatedBmi("--.-");
       }
     }
-  }, [selectedDate, userHeightCm]); // Added selectedDate as a dependency
+  }, [selectedDate, userHeightCm]);
 
+  // Set the week view to match whatever day is picked on the calendar
+  useEffect(() => {
+    const dayOfMonth = selectedDate.getDate();
+    const computedWeekIndex = Math.floor((dayOfMonth - 1) / 7);
+    setCurrentWeekIndex(Math.min(computedWeekIndex, 4)); // Cap at index 4 (Week 5)
+  }, [selectedDate]);
+
+  // Break down the selected month into arrays of 7 days with custom X-axis formatting
+  const weeklyChunks = useMemo(() => {
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    const weeks: any[][] = [[], [], [], [], []];
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const targetDateObj = new Date(year, month, day);
+      const formattedLogKey = targetDateObj.toLocaleDateString(); // Matches "M/D/YYYY"
+      
+      // Look for data log matching this day
+      const loggedDay = entries.find(e => e.date === formattedLogKey);
+      const weekdayLabel = weekdays[targetDateObj.getDay()];
+
+      const chartPoint = {
+        // X-axis displays day value + weekday string ("12 Mon")
+        date: `${day} ${weekdayLabel}`, 
+        sugar: loggedDay ? parseFloat(loggedDay.sugar) : 0,
+        systolic: loggedDay ? parseFloat(loggedDay.bpSystolic) : 0,
+        weight: loggedDay ? parseFloat(loggedDay.weight) : 0,
+      };
+
+      const weekAssignment = Math.floor((day - 1) / 7);
+      if (weekAssignment < 5) {
+        weeks[weekAssignment].push(chartPoint);
+      } else {
+        weeks[4].push(chartPoint); // Catch remaining days in 31-day cycles
+      }
+    }
+    return weeks;
+  }, [entries, selectedDate]);
+
+  // Safely extract the active working dataset
+  const activeChartData = useMemo(() => {
+    return weeklyChunks[currentWeekIndex] || [];
+  }, [weeklyChunks, currentWeekIndex]);
 
   const getBmiStatus = (bmi: string) => {
     const val = parseFloat(bmi);
     if (isNaN(val)) return { label: "No Data", color: "text-slate-400" };
-
-    if (val < 18.5) {
-      return { label: "Underweight", color: "text-amber-500/50" };
-    } else if (val >= 18.5 && val <= 24.9) {
-      return { label: "Healthy", color: "text-emerald-500/50" };
-    } else if (val >= 25 && val <= 29.9) {
-      return { label: "Overweight", color: "text-orange-500/50" };
-    } else {
-      return { label: "Obese", color: "text-red-500/50" };
-    }
+    if (val < 18.5) return { label: "Underweight", color: "text-amber-500/50" };
+    if (val >= 18.5 && val <= 24.9) return { label: "Healthy", color: "text-emerald-500/50" };
+    if (val >= 25 && val <= 29.9) return { label: "Overweight", color: "text-orange-500/50" };
+    return { label: "Obese", color: "text-red-500/50" };
   };
 
-  // This filters your logs to only show entries matching the calendar date
-  const filteredEntries = entries.filter(
-    (entry) => entry.date === selectedDate.toLocaleDateString(),
+  const hasEntryForSelectedDate = entries.some(
+    (entry) => entry.date === selectedDate.toLocaleDateString()
   );
-
-  // We also keep track if ANY data exists for this day to show the "No entry found" card
-  const hasEntryForSelectedDate = filteredEntries.length > 0;
 
   const status = getBmiStatus(calculatedBmi);
 
   return (
     <div className="min-h-screen p-6 transition-colors duration-300 bg-slate-50 dark:bg-slate-950">
       <div className="flex flex-col max-w-6xl gap-12 mx-auto md:flex-row">
-    {/* LEFT SIDE VIEW PANEL CONTAINER */}
-<div className="flex-1">
-  <h1 className="mb-8 text-2xl font-bold dark:text-white">
-    Health Overview
-  </h1>
+        
+        {/* LEFT PANEL CONTAINER */}
+        <div className="flex-1">
+          <h1 className="mb-8 text-2xl font-bold dark:text-white">Health Overview</h1>
 
-  <MetricCards
-    lastEntry={lastEntry}
-    calculatedBmi={calculatedBmi}
-    status={status}
-    userHeightCm={userHeightCm}
-    selectedDate={selectedDate}
-  />
-  
-  <div className="p-6 mt-6 bg-white border shadow-sm dark:bg-slate-900 rounded-3xl border-slate-100 dark:border-slate-800">
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="font-semibold dark:text-slate-200">
-        Weekly Health Report
-      </h3>
-      <button 
-        onClick={() => setViewType(viewType === "bar" ? "line" : "bar")}
-        className="px-3 py-2 mr-5 text-xs font-semibold border-none outline-none bg-slate-200/50 dark:bg-slate-800 dark:text-slate-300 text-slate-600 rounded-xl"
-      >
-         {viewType === "bar" ? "Line" : "Bar"} View
-      </button>
-    </div>
-    <HealthReportChart data={chartData} chartType={viewType} />
-  </div>
+          <MetricCards
+            lastEntry={lastEntry}
+            calculatedBmi={calculatedBmi}
+            status={status}
+            userHeightCm={userHeightCm}
+            selectedDate={selectedDate}
+          />
+          
+          <div className="p-6 mt-6 bg-white border shadow-sm dark:bg-slate-900 rounded-3xl border-slate-100 dark:border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+              <div>
+                <h3 className="font-semibold dark:text-slate-200">Weekly Health Report</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Showing {selectedDate.toLocaleString('default', { month: 'long' })}
+                </p>
+              </div>
 
-  {/* Monthly Parameter Trends */}
-  <MonthlyTrends entries={entries} />
+              {/* PAGINATION AND VIEW TOGGLES */}
+              <div className="flex items-center gap-3">
+                {/* Left/Right Selector Buttons */}
+                <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                  <button
+                    disabled={currentWeekIndex === 0}
+                    onClick={() => setCurrentWeekIndex(prev => prev - 1)}
+                    className="p-1.5 rounded-lg text-slate-500 hover:bg-white dark:hover:bg-slate-700 dark:text-slate-400 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <span className="text-xs font-bold px-2 dark:text-white min-w-[50px] text-center">
+                    Week {currentWeekIndex + 1}
+                  </span>
+                  <button
+                    disabled={currentWeekIndex === 4 || weeklyChunks[currentWeekIndex + 1]?.length === 0}
+                    onClick={() => setCurrentWeekIndex(prev => prev + 1)}
+                    className="p-1.5 rounded-lg text-slate-500 hover:bg-white dark:hover:bg-slate-700 dark:text-slate-400 disabled:opacity-30 disabled:pointer-events-none transition-all"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
 
-  {/* 🌟 NEW PLACEMENT: Historical Cycle Duration Analytics Bar Chart */}
-  <CycleHistoryChart />
-</div>
+                <button 
+                  onClick={() => setViewType(viewType === "bar" ? "line" : "bar")}
+                  className="px-3 py-2 text-xs font-semibold transition-all bg-slate-100 dark:bg-slate-800 dark:text-slate-300 text-slate-600 rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-700/60"
+                >
+                  {viewType === "bar" ? "Line" : "Bar"} View
+                </button>
+              </div>
+            </div>
 
-        {/* --- RIGHT SIDE: CALENDAR --- */}
+            {/* Render chart with computed slice data */}
+            <HealthReportChart data={activeChartData} chartType={viewType} />
+          </div>
+
+          <MonthlyTrends entries={entries} />
+          <CycleHistoryChart />
+        </div>
+
+        {/* RIGHT PANEL: CALENDAR */}
         <div className="w-full md:w-87.5">
           <div className="sticky top-6">
-            <h2 className="mb-4 text-lg font-semibold dark:text-white">
-              Calendar
-            </h2>
+            <h2 className="mb-4 text-lg font-semibold dark:text-white">Calendar</h2>
             <div className="p-2 bg-white border shadow-sm dark:bg-slate-900 rounded-3xl border-slate-100 dark:border-slate-800">
               <CustomCalendar
                 value={selectedDate}
@@ -158,40 +193,29 @@ const Dashboard = () => {
                 entries={entries}
               />
             </div>
-            <div
-              className={`mt-4 p-4 rounded-2xl border transition-all duration-300 ${
-                hasEntryForSelectedDate
-                  ? "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800"
-                  : "bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-900/30"
-              }`}
-            >
-              <p
-                className={`text-xs font-bold uppercase tracking-wider ${
-                  hasEntryForSelectedDate
-                    ? "text-blue-600 dark:text-blue-400"
-                    : "text-amber-600 dark:text-amber-500"
-                }`}
-              >
+            
+            <div className={`mt-4 p-4 rounded-2xl border transition-all duration-300 ${
+              hasEntryForSelectedDate
+                ? "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800"
+                : "bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-900/30"
+            }`}>
+              <p className={`text-xs font-bold uppercase tracking-wider ${
+                hasEntryForSelectedDate ? "text-blue-600 dark:text-blue-400" : "text-amber-600 dark:text-amber-500"
+              }`}>
                 {hasEntryForSelectedDate ? "Entry Found" : "No Entry Found"}
               </p>
-              <p
-                className={`text-lg font-bold ${
-                  hasEntryForSelectedDate
-                    ? "text-blue-800 dark:text-blue-200"
-                    : "text-amber-800 dark:text-amber-200"
-                }`}
-              >
+              <p className={`text-lg font-bold ${
+                hasEntryForSelectedDate ? "text-blue-800 dark:text-blue-200" : "text-amber-800 dark:text-amber-200"
+              }`}>
                 {selectedDate.toDateString()}
               </p>
             </div>
             <div className="mt-4">
-                {/* 🚀 Place the new component here */}
-        {/* <CycleTrackerCard data={MOCK_USER_DATA} /> */}
-        <CycleTrackerCard />
-              </div>
+              <CycleTrackerCard />
+            </div>
           </div>
-          
         </div>
+
       </div>
     </div>
   );

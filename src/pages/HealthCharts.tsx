@@ -7,14 +7,15 @@ import {
 export const HealthReportChart = ({ data, chartType }: { data: any[], chartType: 'bar' | 'line' }) => {
 
 const commonElements = [
-  <XAxis 
-    key="xaxis" 
-    dataKey="date" 
-    axisLine={false} 
-    tickLine={false} 
-    tick={{fontSize: 10, fill: '#94a3b8'}} 
-    dy={10} 
-  />,
+ <XAxis 
+  key="xaxis" 
+  dataKey="date" 
+  axisLine={false} 
+  tickLine={false} 
+  tick={{ fontSize: 10, fill: '#94a3b8' }} 
+  dy={10} 
+  interval={0} // Forces Recharts to reveal every day in the week instead of hiding text blocks
+/>,
   <YAxis key="yaxis" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} />,
   <Tooltip 
     key="tooltip"
@@ -40,7 +41,7 @@ const commonElements = [
 
   if (chartType === 'line') {
     return (
-      <div className="h-64 w-full mt-6">
+      <div className="w-full h-64 mt-6">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ left: -20, right: 10 }}>
             {commonElements}
@@ -70,7 +71,7 @@ const commonElements = [
   }
 
   return (
-    <div className="h-64 w-full mt-6">
+    <div className="w-full h-64 mt-6">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} barGap={8}>
           {commonElements}
