@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppContext } from '../context/Appcontext';
 import { User as UserIcon, Upload } from 'lucide-react';
@@ -61,7 +61,7 @@ const Profile = () => {
 
   const inputStyle = `w-full p-3 rounded-xl border outline-none transition-all duration-200 ${
     isEditing 
-    ? "bg-white dark:bg-slate-900 border-[#60A5FA] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#60A5FA]/20 shadow-[0_0_10px_rgba(0,85,255,0.1)]"
+    
     ? "bg-white dark:bg-slate-900 border-[#60A5FA] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#60A5FA]/20 shadow-[0_0_10px_rgba(0,85,255,0.1)]"
     : "bg-slate-50 dark:bg-slate-900/30 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 cursor-not-allowed"
   }`;
@@ -155,7 +155,7 @@ const Profile = () => {
                   accept="image/*"
                   className="hidden"
                   disabled={!isEditing}
-                  disabled={!isEditing}
+                  
                 />
                 <button 
                   type="button"
@@ -332,7 +332,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
