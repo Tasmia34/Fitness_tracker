@@ -1,3 +1,5 @@
+
+
 @import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
@@ -5,6 +7,7 @@
 @import "tailwindcss";
 
 /* This is the critical part for v4 theme switching */
+
 @variant dark (&:where(.dark, .dark *));
 
 @theme {

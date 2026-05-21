@@ -1,6 +1,5 @@
 import { Route, Routes, Navigate } from "react-router-dom"
 import Dashboard from "./pages/Dashboard" 
-
 import ActivityLog from "./pages/ActivityLog"
 import Login from "./pages/Login"
 import Profile from "./pages/Profile"
@@ -10,40 +9,41 @@ import Layout from "./pages/Layout"
 import { useAppContext } from "./context/Appcontext"
 import Home from "./pages/Home" 
 
-
 const App = () => {
-  const { user, isUserFetched , onboardingCompleted} = useAppContext()
+  const { user, isUserFetched, onboardingCompleted } = useAppContext()
 
-  // ডাটা ফেচ হওয়া পর্যন্ত ওয়েটিং স্ক্রিন
-  if (!isUserFetched) return <div className="h-screen flex items-center justify-center bg-slate-950 text-white">Loading...</div>
+  if (!isUserFetched) return <div className="flex items-center justify-center h-screen font-bold text-blue-500 bg-slate-950">Loading...</div>
 
   return (
     <Routes>
-      {/* ১. পাবলিক লগইন রাউট: এটি তখন কাজ করবে যখন ইউজার লগআউট অবস্থায় থাকবে */}
-      <Route path="/login" element={<Login />} />
+      {/* 1. PUBLIC ROUTES (No Layout/Sidebar) */}
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
 
-      {/* ২. প্রোটেক্টেড রাউটস: এখানে শুধু লগইন করা ইউজার ঢুকতে পারবে */}
-      <Route path='/' element={user ? <Layout /> : <Navigate to="/login" />}>
-        
-        {/* যদি অনবোর্ডিং শেষ না হয়, তবে সবসময় অনবোর্ডিং পেজে পাঠাবে */}
-
-
-
-        <Route index element={<Home />}/>
-      
-        
-        <Route path="dashboard" element={<Dashboard />} />      
-        <Route path='activityLog' element={<ActivityLog />} />
-	      <Route path='aiPlanner' element={<AiAssistant />} />
-        <Route path='profile' element={<Profile />} /> 
-        <Route path='onboarding' element={<Onboarding />} />
-        
-        {/* ৩. এটিই সেই লাইন যা আপনি চাচ্ছেন: এখন লগইন থাকা অবস্থায় /login এ গেলে সাইডবারসহ পেজটি দেখাবে */}
-        <Route path='login' element={<Login />} />
-      </Route>
-
-      {/* ভুল লিঙ্কে গেলে মেইন পেজে পাঠিয়ে দাও */}
-      <Route path="*" element={<Navigate to="/" />} />
+      {/* 2. PROTECTED ROUTES */}
+      {user ? (
+        <>
+          {/* Onboarding Flow */}
+          {!onboardingCompleted ? (
+            <Route path="/onboarding" element={<Onboarding />} />
+          ) : (
+            /* App Flow (With Sidebar) */
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/activityLog" element={<ActivityLog />} />
+              <Route path="/aiPlanner" element={<AiAssistant />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
+          )}
+          
+          {/* Catch-all for logged in users: 
+              If onboarded, go to dashboard; else, onboarding */}
+          <Route path="*" element={<Navigate to={onboardingCompleted ? "/dashboard" : "/onboarding"} replace />} />
+        </>
+      ) : (
+        /* Redirect all other paths to Home if not logged in */
+        <Route path="*" element={<Navigate to="/" replace />} />
+      )}
     </Routes>
   )
 }

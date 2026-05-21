@@ -1,7 +1,7 @@
-import React from 'react';
+// import React from 'react';
 import { useAppContext } from '../context/Appcontext';
 import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, User, Activity, ArrowRight, LogIn, BarChart3, Droplet, Layout, TrendingUp, Scale ,CheckCircle2} from 'lucide-react';
+import {  Activity,  BarChart3, Droplet, Layout, TrendingUp, Scale ,CheckCircle2} from 'lucide-react';
 
 
 
@@ -87,7 +87,7 @@ const ProductShowroom = () => {
               <ul className="pt-2 space-y-4">
                 {section.list.map((item, idx) => (
                   <li key={idx} className="flex items-center gap-3 font-semibold text-slate-700 dark:text-slate-300">
-                    <CheckCircle2 size={20} className="text-[#0055FF] flex-shrink-0" />
+                    <CheckCircle2 size={20} className="text-[#0055FF] shrink-0" />
                     <span className="text-base md:text-lg">{item}</span>
                   </li>
                 ))}
@@ -187,7 +187,7 @@ const FeatureGrid = () => {
           {features.map((item, index) => (
             <div 
               key={index} 
-              className="flex items-center gap-6 p-6 bg-[#fdfaf7] dark:bg-[#1e293b] rounded-[2rem] border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-default"
+              className="flex items-center gap-6 p-6 bg-[#fdfaf7] dark:bg-slate-800 rounded-4xl border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-default"
             >
               {/* গোলাকার আইকন হোল্ডার */}
               <div className={`${item.bgColor} dark:bg-opacity-10 p-4 rounded-full ${item.iconColor} shadow-sm`}>
@@ -238,7 +238,7 @@ const Home = () => {
   <div className="flex-1 max-w-xl space-y-6 text-left">
     
     {/* উপরের ফ্যান্সি বার/ব্যাজ (Gradient Badge) */}
-    <div className="inline-flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950/40 dark:to-blue-950/40 border-cyan-100/80 dark:border-cyan-900/30">
+    <div className="inline-flex items-center gap-2 px-4 py-2 border rounded-full shadow-sm bg-linear-to-r from-cyan-50 to-blue-50 dark:from-cyan-950/40 dark:to-blue-950/40 border-cyan-100/80 dark:border-cyan-900/30">
       <span className="text-base">❤️</span>
       <span className="text-xs font-bold tracking-wide md:text-sm text-slate-800 dark:text-slate-200">
         Welcome To Health Monitoring Platform
@@ -247,7 +247,7 @@ const Home = () => {
 
     {/* ফ্যান্সি বোল্ড টেক্সট */}
     <h1 className="text-5xl md:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1] uppercase">
-      Know Your <span className="bg-gradient-to-r from-[#0055FF] to-cyan-400 bg-clip-text text-transparent">Vitals</span>  <br />
+      Know Your <span className="bg-linear-to-r from-[#0055FF] to-cyan-400 bg-clip-text text-transparent">Vitals</span>  <br />
       Own Your Health
     </h1>
 
@@ -272,14 +272,14 @@ const Home = () => {
   <div className="relative flex-1 w-full max-w-lg">
     
     {/* মেইন ইমেজ কন্টেইনার (কোনো চ্যাপ্টা বা বার ইফেক্ট নেই) */}
-    <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800 aspect-[4/5] w-full">
+    <div className="relative rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800 aspect-4/5 w-full">
       <img 
         src="https://i.pinimg.com/736x/a8/da/59/a8da5917f5f82c792717546169a21b2a.jpg"
         alt="Predictive Health Diagnostics" 
         className="object-cover w-full h-full"
       />
       {/* ইমেজের ওপরের হালকা সিনেমাটিক ওভারলে */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent"></div>
+      <div className="absolute inset-0 bg-linear-to-t from-slate-950/20 via-transparent to-transparent"></div>
     </div>
 
     {/* টপ ফ্লোটিং কার্ড: Early Detection Alert */}
@@ -289,7 +289,7 @@ const Home = () => {
     </div>
 
     {/* বটম ফ্লোটিং কার্ড: AI Prediction Status */}
-    <div className="absolute -bottom-6 left-6 right-6 bg-white/95 dark:bg-[#111827]/95 backdrop-blur-md p-6 rounded-[2rem] shadow-2xl border border-slate-100 dark:border-slate-800/80">
+    <div className="absolute -bottom-6 left-6 right-6 bg-white/95 dark:bg-[#111827]/95 backdrop-blur-md p-6 rounded-4xl shadow-2xl border border-slate-100 dark:border-slate-800/80">
       <div className="flex items-center gap-2 text-[#0055FF] text-xs font-black uppercase tracking-widest mb-2">
         <span>✦</span> AI Prediction
       </div>
@@ -329,7 +329,7 @@ const Home = () => {
         <ProductShowroom />
 
         {/* মোটিভেশনাল সেকশন */}
-        <div className="p-8 bg-gradient-to-r from-[#0055FF] to-[#0088FF] rounded-[2.5rem] text-white shadow-2xl flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="p-8 bg-linear-to-r from-[#0055FF] to-[#0088FF] rounded-[2.5rem] text-white shadow-2xl flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
             <h4 className="text-2xl italic font-black">Visualize Your Progress. Master Your Trends</h4>
             <p className="font-medium opacity-80">Track Today. Protect Tomorrow!</p>

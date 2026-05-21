@@ -6,13 +6,15 @@ export type User = {
     password: string;
     token: string;
     name?: string;       
-    dob?: string;        // Date of Birth
+    dob?: string;        
     age?: number;        
     height?: number; 
     gender?: string;
+    useMenstrualTracker?:boolean;
   avgCycleLength?: number;
-  lastPeriodStart?: string; // Current ongoing cycle start
-  cycleHistory?: HistoricalCycle[]; // 🌟 Added for charting historical cycles
+  avgBleedingDays?:number;
+  lastPeriodStart?: string; 
+  cycleHistory?: HistoricalCycle[];
     bloodGroup?: string;
     profileImage?: string ;    
     documentId?: string;
