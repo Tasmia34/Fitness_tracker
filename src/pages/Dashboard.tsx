@@ -84,6 +84,7 @@ const Dashboard = () => {
         date: `${day} ${weekdayLabel}`, 
         sugar: loggedDay ? parseFloat(loggedDay.sugar) : 0,
         systolic: loggedDay ? parseFloat(loggedDay.bpSystolic) : 0,
+        diastolic: loggedDay ? parseFloat(loggedDay.bpDiastolic) : 0,
         weight: loggedDay ? parseFloat(loggedDay.weight) : 0,
       };
 
