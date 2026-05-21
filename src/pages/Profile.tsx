@@ -1,6 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAppContext } from '../context/Appcontext';
-import { User as UserIcon, Upload, Calendar, Ruler, Save } from 'lucide-react';
+import { User as UserIcon, Upload } from 'lucide-react';
+
+// গ্লোবাল ইউজার অবজেক্টের টাইপ যদি ডিফাইন করা না থাকে, তার জন্য একটি সেফ ইন্টারফেস
+interface UserType {
+  name?: string;
+  email?: string;
+  dob?: string;
+  age?: number;
+  height?: number;
+  gender?: string;
+  bloodGroup?: string;
+  profileImage?: string | null;
+  username?: string;
+}
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -47,6 +61,7 @@ const Profile = () => {
 
   const inputStyle = `w-full p-3 rounded-xl border outline-none transition-all duration-200 ${
     isEditing 
+    ? "bg-white dark:bg-slate-900 border-[#60A5FA] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#60A5FA]/20 shadow-[0_0_10px_rgba(0,85,255,0.1)]"
     ? "bg-white dark:bg-slate-900 border-[#60A5FA] text-slate-900 dark:text-white focus:ring-2 focus:ring-[#60A5FA]/20 shadow-[0_0_10px_rgba(0,85,255,0.1)]"
     : "bg-slate-50 dark:bg-slate-900/30 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 cursor-not-allowed"
   }`;
@@ -139,6 +154,7 @@ const Profile = () => {
                   onChange={handleImageChange}
                   accept="image/*"
                   className="hidden"
+                  disabled={!isEditing}
                   disabled={!isEditing}
                 />
                 <button 
@@ -316,6 +332,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
